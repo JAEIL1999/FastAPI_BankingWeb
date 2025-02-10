@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from app.routers import users, account_handler, favorites, home
 from app.dependencies import create_db, get_db
-from app.models.account_model import *
+from app.models.models import *
 
 create_db()
 app = FastAPI()
