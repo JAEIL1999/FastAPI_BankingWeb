@@ -1,4 +1,4 @@
-from app.models.account_model import Account, Transactions
+from app.models.models import Account, Transactions
 from app.schemas.account_schemas import Transfer, Account
 from sqlmodel import Session, select
 from fastapi import HTTPException
