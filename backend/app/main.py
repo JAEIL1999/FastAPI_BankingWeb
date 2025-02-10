@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from app.routers import users, account, favorites, home
+from app.dependencies import create_db
 
+create_db()
 app = FastAPI()
 
 # 홈 화면 라우터 포함

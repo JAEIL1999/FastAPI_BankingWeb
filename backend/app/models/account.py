@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field, Relationship
+from sqlmodel import SQLModel, Field
 from datetime import datetime, timezone
 
 class Account(SQLModel, table=True):
