@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from app.models.account_model import Account
+from app.models.models import Account
 
 class Transfer(BaseModel):
     sender: int
