@@ -5,7 +5,6 @@ class UserSignup(BaseModel):
     user_id: str
     password: str
     
-
 class UserLogin(BaseModel):
     user_id: str
     password: str
