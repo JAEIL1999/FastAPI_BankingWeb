@@ -49,13 +49,17 @@ class UserService:
             return None
         
         return dbUser
-        
         #유저 정보 입력받기
         #암호화된 비밀번호를 체크
         pass  # 로그인 처리 로직
 
     def recover_password(self, db:Session, login_id:str, name:str):
+        statement = select(User).where(User.login_id == login_id, User.name == name)
+        result = db.exec(statement)
+        
+        recover=""
         #아이디 입력받기
         #이름 입력받기
+        #암호 복호화
         #비밀번호 길이, 앞 3글자 넘겨주기
         pass  # 비밀번호 찾기 처리 로직
