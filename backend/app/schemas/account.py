@@ -5,9 +5,7 @@ class Account(BaseModel):
     user_id: int
     balance: float
 
-
 class Transfer(BaseModel):
-    from_account: int
-    to_account: int
+    sender: int
+    receiver: int
     amount: float
-    date: int

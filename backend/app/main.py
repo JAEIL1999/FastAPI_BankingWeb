@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import users, account, home
+from app.routers import users, account, favorites, home
 
 app = FastAPI()
 
@@ -9,3 +9,4 @@ app.include_router(home.router)
 # 다른 기능별 라우터들 포함
 app.include_router(users.router)
 app.include_router(account.router)
+app.include_router(favorites.router)

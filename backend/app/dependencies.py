@@ -1,5 +1,11 @@
-# 공통 의존성 (DB 연결)
-from fastapi import Depends
+from sqlmodel import (SQLModel,Session, create_engine)
+
+db_url = 'sqlite:///./app/db/test.db'
+db_engine = create_engine(db_url, connect_args={"check_same_thread": False})
 
 def get_db():
-    pass  # 데이터베이스 세션 반환
+  with Session(db_engine) as session:
+    yield session
+  
+def create_db():
+  SQLModel.metadata.create_all(db_engine)
