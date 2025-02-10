@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from app.routers import users, account_handler, favorites, home
+from app.routers import users, account_handler, favorites, home, daily_handler
 from app.dependencies import create_db, get_db
 from app.models.models import *
 
@@ -21,3 +21,4 @@ app.include_router(home.router)
 app.include_router(users.router)
 app.include_router(account_handler.router)
 app.include_router(favorites.router)
+app.include_router(daily_handler.router)
