@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from app.services.account_service import AccountService
-from app.schemas.account_schemas import Transfer, Account, UserAccounts
-from app.dependencies import get_db
+from app.schemas.account_schemas import Transfer, Account, UserAccounts, Transfer_log
+from app.dependencies import get_db, JWTTool
 from sqlmodel import Session
 
 router = APIRouter()
@@ -14,12 +14,13 @@ def transfer(transfer_detail: Transfer, db: Session=Depends(get_db)):
     return result
 
 # 계좌 목록
-@router.get("/users/account/{user_id}")
-# TODO: user_id로 입력받는 부분을 토큰으로 변경, 토큰을 입력받는다.
-# TODO: user_id = 토큰을 user_id로 변경하는 로직 추가
-def get_accounts(user_id: int,
+@router.get("/users/account/{jwt_token}")
+def get_accounts(jwt_token: str,
                  session=Depends(get_db),
-                 service: AccountService = Depends()) -> UserAccounts:
+                 service: AccountService = Depends(),
+                 decording: JWTTool = Depends()) -> UserAccounts:
+    payload = decording.decode_token(jwt_token)
+    user_id = payload["user_id"]
     accounts_data = service.get_accounts(session, user_id)
     return UserAccounts(accounts=accounts_data)
 
@@ -43,12 +44,13 @@ def delete_account(account_id: int,
     return {}
 
 # 송금 내역
-@router.get("/user/{name}")
-def transfer_log(name: str,
+@router.get("/user/{jwt_token}")
+def transfer_log(jwt_token: str,
                  session=Depends(get_db),
-                 service: AccountService = Depends()) -> Transfer_log:
-    pass
-    # TODO: name을 token으로 변경, 토큰을 입력받는다.
-    # TODO: user_id = 입력받은 토큰을 유저 id로 바꿔주는 로직 추가
-    # TODO: logs = AccountService.transfer_logs(session, user_id)
-    # return logs
+                 service: AccountService = Depends(),
+                 decording: JWTTool = Depends()) -> Transfer_log:
+    payload = decording.decode_token(jwt_token)
+    user_id = payload["user_id"]
+
+    logs = AccountService.transfer_logs(session, user_id)
+    return logs
