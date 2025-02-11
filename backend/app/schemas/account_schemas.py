@@ -6,6 +6,9 @@ class Transfer(BaseModel):
     sender: int
     receiver: int
     amount: float
+
+class Transfer_log(BaseModel):
+    transfer_list: list[Transfer]
     
 class AccountCreate(BaseModel):
     owner_id: int
