@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.daily_schemas import *
 from app.dependencies import get_db
 from sqlmodel import Session, select
-from app.models.models import Account, Transactions
+from app.models.models import Account, Transactions, User
 
 router = APIRouter()
 
@@ -25,3 +25,15 @@ def get_transactions(user_id: int,
         "out" : trans_out,
         "in" : trans_in
     }
+
+# 로그인 성공 후 이름 띄우기
+@router.get("/users/{user_id}/home")
+def get_name(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.login_id == user_id).first()
+
+     # 사용자 없으면 404 오류 발생
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # 사용자 이름 반환
+    return {"name": user.name}
