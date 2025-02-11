@@ -1,7 +1,6 @@
 from sqlmodel import SQLModel, Field
 from datetime import datetime, timezone
 from typing import Optional
-from sqlmodel import SQLModel, Field
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -20,3 +19,8 @@ class Transactions(SQLModel, table=True):
     receiver: int = Field(foreign_key="account.owner_id")
     amount: float
     timestamp: datetime = Field(default=datetime.now(timezone.utc))
+    
+class Favorite(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int
+    account_id: int

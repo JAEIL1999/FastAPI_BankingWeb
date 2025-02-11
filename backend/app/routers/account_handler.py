@@ -45,3 +45,10 @@ def delete_account(account_id: int,
                    service: AccountService = Depends()):
     service.delete_account(session, account_id)
     return {}
+
+# 송금 내역
+@router.get("/user/{name}")
+def transfer_log(name: str,
+                 session=Depends(get_db),
+                 service: AccountService = Depends()):
+    pass
