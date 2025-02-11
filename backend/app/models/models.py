@@ -39,7 +39,7 @@ class Transactions(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     sender: int = Field(foreign_key="account.owner_id")
     receiver: int = Field(foreign_key="account.owner_id")
-    amount: float
+    amount: int
     timestamp: datetime = Field(default=datetime.now(timezone.utc))
     
 class Favorite(SQLModel, table=True):
