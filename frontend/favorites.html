@@ -1,161 +1,180 @@
-
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>즐겨찾기</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #d9d9d9;
-            color: black;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-          background-color: #d9d9d9;
-          width: 90%;
-          max-width: 700px;
-          padding: 40px;
-          padding-left: 300px;
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #d9d9d9;
+        color: black;
+        text-align: center;
+        padding: 20px;
+      }
+      .container {
+        background-color: #d9d9d9;
+        width: 90%;
+        max-width: 700px;
+        padding: 40px;
+        padding-top: 100px;
+        padding-left: 350px;
       }
       .sub_container {
         background-color: #d9d9d9;
         width: 90%;
         max-width: 700px;
         text-align: left;
-    }
-        table {
-            width: 100%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background-color: white;
-            color: black;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        button {
-            padding: 5px 10px;
-            margin: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-            background-color: #F9FF82;
-        }
-        .delete-btn { background-color: #76D4FF; color: black; }
-        .confirm-btn { background-color: #76D4FF; color: black; }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-        }
-        .popup input {
-            display: block;
-            margin: 10px auto;
-            padding: 5px;
-        }
-        .popup button {
-            margin: 5px;
-        }
+      }
+      table {
+        width: 100%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background-color: white;
+        color: black;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+      }
+      button {
+        padding: 5px 10px;
+        margin: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+        border: none;
+        background-color: #f9ff82;
+      }
+      .back-btn {
+        background-color: white;
+        border: none;
+        padding: 5px 10px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .delete-btn {
+        background-color: #76d4ff;
+        color: black;
+      }
+      .confirm-btn {
+        background-color: #76d4ff;
+        color: black;
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+      }
+      .popup input {
+        display: block;
+        margin: 10px auto;
+        padding: 5px;
+      }
+      .popup button {
+        margin: 5px;
+      }
     </style>
-</head>
-<body>
-  <div class="container">
-    <div class="sub_container">
-      <h1>즐겨찾기</h1>
-      <input type="text" id="userId" placeholder="ID 입력">
-      <button onclick="loadFavorites()">조회</button>
-      <button onclick="openPopup()">추가</button>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sub_container">
+        <button class="back-btn" onclick="navigateTo('계좌이체')">이전</button>
+        <h1>즐겨찾기</h1>
+        <input type="text" id="userId" placeholder="ID 입력" />
+        <button onclick="loadFavorites()">조회</button>
+        <button onclick="openPopup()">추가</button>
 
-      <!-- 팝업 -->
-      <div class="popup" id="popup">
+        <!-- 팝업 -->
+        <div class="popup" id="popup">
           <h3>즐겨찾기 추가</h3>
-          <input type="text" id="popupUserId" placeholder="User ID">
-          <input type="text" id="popupAccountId" placeholder="Account ID">
+          <input type="text" id="popupUserId" placeholder="User ID" />
+          <input type="text" id="popupAccountId" placeholder="Account ID" />
           <button onclick="addFavorite()">확인</button>
           <button onclick="closePopup()">취소</button>
+        </div>
       </div>
-    </div>
-    
+
       <table id="favoritesTable">
-          <thead>
-              <tr>
-                  <th>계좌번호</th>
-                  <th>확인</th>
-                  <th>삭제</th>
-              </tr>
-          </thead>
-          <tbody></tbody>
+        <thead>
+          <tr>
+            <th>계좌번호</th>
+            <th>확인</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
       </table>
-  </div>
+    </div>
+    <script src="js/router.js"></script>
 
     <script>
-        let favorites = [];
+      let favorites = [];
 
-        function loadFavorites() {
-            const userId = document.getElementById("userId").value;
-            const tableBody = document.querySelector("#favoritesTable tbody");
-            tableBody.innerHTML = "";
+      function loadFavorites() {
+        const userId = document.getElementById("userId").value;
+        const tableBody = document.querySelector("#favoritesTable tbody");
+        tableBody.innerHTML = "";
 
-            const userFavorites = favorites.filter(fav => fav.userId === userId);
-            userFavorites.forEach((fav, index) => {
-                const row = tableBody.insertRow();
-                row.insertCell(0).textContent = fav.accountId;
+        const userFavorites = favorites.filter((fav) => fav.userId === userId);
+        userFavorites.forEach((fav, index) => {
+          const row = tableBody.insertRow();
+          row.insertCell(0).textContent = fav.accountId;
 
-                const confirmBtn = document.createElement("button");
-                confirmBtn.textContent = "확인";
-                confirmBtn.classList.add("confirm-btn");
-                confirmBtn.onclick = () => transferToAccount(fav.accountId);
-                row.insertCell(1).appendChild(confirmBtn);
+          const confirmBtn = document.createElement("button");
+          confirmBtn.textContent = "확인";
+          confirmBtn.classList.add("confirm-btn");
+          confirmBtn.onclick = () => transferToAccount(fav.accountId);
+          row.insertCell(1).appendChild(confirmBtn);
 
-                const deleteBtn = document.createElement("button");
-                deleteBtn.textContent = "삭제";
-                deleteBtn.classList.add("delete-btn");
-                deleteBtn.onclick = () => deleteFavorite(index, userId);
-                row.insertCell(2).appendChild(deleteBtn);
-            });
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "삭제";
+          deleteBtn.classList.add("delete-btn");
+          deleteBtn.onclick = () => deleteFavorite(index, userId);
+          row.insertCell(2).appendChild(deleteBtn);
+        });
+      }
+
+      function openPopup() {
+        document.getElementById("popup").style.display = "block";
+      }
+
+      function closePopup() {
+        document.getElementById("popup").style.display = "none";
+      }
+
+      function addFavorite() {
+        const userId = document.getElementById("popupUserId").value;
+        const accountId = document.getElementById("popupAccountId").value;
+
+        if (userId && accountId) {
+          favorites.push({ userId, accountId });
+          closePopup();
+          loadFavorites();
+        } else {
+          alert("User ID와 Account ID를 입력하세요.");
         }
+      }
 
-        function openPopup() {
-            document.getElementById("popup").style.display = "block";
-        }
+      function deleteFavorite(index, userId) {
+        favorites = favorites.filter(
+          (fav, i) => !(i === index && fav.userId === userId)
+        );
+        loadFavorites();
+      }
 
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-        }
-
-        function addFavorite() {
-            const userId = document.getElementById("popupUserId").value;
-            const accountId = document.getElementById("popupAccountId").value;
-
-            if (userId && accountId) {
-                favorites.push({ userId, accountId });
-                closePopup();
-                loadFavorites();
-            } else {
-                alert("User ID와 Account ID를 입력하세요.");
-            }
-        }
-
-        function deleteFavorite(index, userId) {
-            favorites = favorites.filter((fav, i) => !(i === index && fav.userId === userId));
-            loadFavorites();
-        }
-
-        function transferToAccount(accountId) {
-            window.location.href = `transfer.html?account=${accountId}`;
-        }
+      function transferToAccount(accountId) {
+        window.location.href = `transfer.html?account=${accountId}`;
+      }
     </script>
-
-</body>
+  </body>
 </html>
