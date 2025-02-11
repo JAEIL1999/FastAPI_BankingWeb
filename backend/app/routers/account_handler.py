@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends
 from app.services.account_service import AccountService
-from app.schemas.account_schemas import Transfer
+from app.schemas.account_schemas import Transfer,RespAccounts, Account, AccountCreate
 from app.dependencies import get_db
 from sqlmodel import Session
-from app.schemas.account_schemas import RespAccounts, Account, AccountCreate
 
 router = APIRouter()
 
@@ -46,3 +45,10 @@ def delete_account(account_id: int,
                    service: AccountService = Depends()):
     service.delete_account(session, account_id)
     return {}
+
+# 송금 내역
+@router.get("/user/{name}")
+def transfer_log(name: str,
+                 session=Depends(get_db),
+                 service: AccountService = Depends()):
+    pass

@@ -1,15 +1,17 @@
-from app.models.account_model import Account, Transactions
-from app.schemas.account_schemas import Transfer, Account
+from app.models.models import Account, Transactions
+from app.schemas.account_schemas import Transfer, Account, Transfer_log
 from sqlmodel import Session, select
 from fastapi import HTTPException
 
 class AccountService:
+    # 특정 계좌 확인(계좌 id 기준)
     def get_account(self, db:Session, account_id: int) -> Account:
-        account = db.get(Account, account_id)
+        account = db.query(Account).filter(Account.account_id == account_id).first()
         if not account:
-            raise HTTPException(status_code=404, detail="Post not found")
+            raise HTTPException(status_code=404, detail="Account not found")
         return account
     
+    # 계좌 목록 조회
     def get_accounts(self, db: Session, page: int=1,
                       limit: int=10) -> list[Account]:
         nOffset = (page-1) * limit
@@ -18,23 +20,18 @@ class AccountService:
         ).all()
         return accounts
     
+    # 계좌 생성
     def create_account(self, db: Session, account: Account) -> Account:
         db.add(account)
         db.commit()
         db.refresh(account)
         return account
     
-    def update_account(self, db: Session, account_id: int, money: int, account: Account) -> Account:
-        oldAccount = self.get_account(db, account_id)
-        accountData = account.model_dump(exclude_unset=True)
-        oldAccount.sqlmodel_update(accountData)
-        db.add(oldAccount)
-        db.commit()
-        db.refresh(oldAccount)
-        return oldAccount
-    
+    # 계좌 삭제
     def delete_account(self, db: Session, account_id: int):
         account = self.get_account(db, account_id)
+        if not account:
+            raise HTTPException(status_code=404, detail="Post not found")
         db.delete(account)
         db.commit()
 
@@ -70,3 +67,14 @@ class AccountService:
         db.refresh(transaction)
         
         return {"status": "Transfer successful"}
+    
+    # 계좌이체 내역
+    def transfer_logs(db: Session, transfer_details: Transfer, user_id: int) -> Transfer_log:
+        user_logs = Transfer_log()
+        while True:
+            log = db.query(Transactions).filter(Transactions.sender == user_id)
+            if log == None:
+                break
+            user_logs.transfer_list.append(log)
+        return user_logs
+
