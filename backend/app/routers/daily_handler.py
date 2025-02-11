@@ -11,7 +11,7 @@ router = APIRouter()
 def get_transactions(user_id: int,
                     req: Dailyreq,
                     db: Session = Depends(get_db),
-                    sum: bool = True) -> Dailyresp:
+                    sum: bool = True): # -> Dailyresp
     
     # user_id에 해당하는 모든 account_id 가져오기
     accounts = db.query(Account.account_id).filter(Account.owner_id == user_id).all()
