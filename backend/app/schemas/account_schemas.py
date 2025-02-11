@@ -10,17 +10,5 @@ class Transfer(BaseModel):
 class Transfer_log(BaseModel):
     transfer_list: list[Transfer]
     
-class AccountCreate(BaseModel):
-    owner_id: int
-    account_id: int
-    balance: int
-
-class RespAccounts(BaseModel):
+class UserAccounts(BaseModel):
     accounts: List[Account]
-    page: int
-    limit: int
-
-class UserReq(BaseModel):
-    id: int
-    user_id: int
-    name: str

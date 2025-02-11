@@ -4,11 +4,174 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>계좌이체</title>
+    <style>
+      /* 전체 페이지 스타일 */
+      body {
+        background-color: #d9d9d9; /* 어두운 배경 */
+        color: black;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .container {
+        background-color: #d9d9d9;
+        width: 90%;
+        max-width: 700px;
+        padding: 30px;
+        padding-left: 100px;
+        text-align: left;
+      }
+
+      /* 제목 스타일 */
+      h1 {
+        font-size: 32px;
+        font-weight: bold;
+        padding-bottom: 10px;
+      }
+
+      h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+        padding-bottom: 50px;
+        font-weight: lighter;
+      }
+      /* 즐겨찾기 버튼 */
+      .back-btn {
+        background-color: white;
+        border: none;
+        padding: 5px 10px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      /* 즐겨찾기 버튼 */
+      .favorite-btn {
+        background-color: #f9ff82;
+        border: none;
+        padding: 5px 10px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* 입력 필드 그룹 */
+      .input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      /* 입력 필드 */
+      input {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        width: 150px;
+        font-size: 16px;
+        width: 100%;
+      }
+
+      /* 보내기 버튼 */
+      .send-btn {
+        background-color: #76d4ff;
+        color: white;
+        border: none;
+        padding: 12px 50px;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 10px;
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
-    <h1>Transfer</h1>
-    <button onclick="navigateTo('계좌조회')">계좌조회</button>
-    <button onclick="navigateTo('즐겨찾기')">즐겨찾기</button>
-    <script src="js/router.js"></script>  
+    <div class="container">
+      <button class="back-btn" onclick="navigateTo('계좌조회')">이전</button>
+      <h1>계좌이체</h1>
+      <h2>어디로 돈을 보낼까요?</h2>
+      <button class="favorite-btn" onclick="navigateTo('즐겨찾기')">
+        즐겨찾기
+      </button>
+      <div class="input-group">
+        <input
+          type="text"
+          id="sender"
+          name="sender"
+          placeholder="송금자 계좌"
+        />
+        <input
+          type="text"
+          id="receiver"
+          name="receiver"
+          placeholder="받는 사람 계좌"
+        />
+        <input type="text" id="amount" name="amount" placeholder="금액" />
+      </div>
+      <button class="send-btn">보내기</button>
+    </div>
+    <script src="js/router.js"></script>
+
+    <script>
+      // 페이지 로드 후 이벤트 리스너 등록
+      document.addEventListener("DOMContentLoaded", function () {
+        // '보내기' 버튼 클릭 시 transferFunds() 실행
+        document
+          .querySelector(".send-btn")
+          .addEventListener("click", transferFunds);
+      });
+
+      function transferFunds() {
+        // 입력값 가져오기
+        const sender = document.getElementById("sender").value;
+        const receiver = document.getElementById("receiver").value;
+        const amount = document.getElementById("amount").value;
+
+        // 입력 값 확인
+        if (!sender || !receiver || !amount) {
+          alert("모두 입력해주세요");
+          return;
+        }
+
+        console.log("Sending request to server...");
+
+        // API 호출 (POST 요청)
+        fetch("http://127.0.0.1:8000/transfer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            sender: sender,
+            receiver: receiver,
+            amount: parseInt(amount),
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("네트워크 오류 발생");
+            }
+            return response.json(); // 응답을 JSON으로 파싱
+          })
+          .then((data) => {
+            console.log(data); // 응답 데이터 출력 (디버깅용)
+            if (data.error) {
+              alert(data.error); // 오류 처리
+            } else {
+              alert(data.status); // 성공 메시지
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error); // 에러 메시지 출력
+            alert("서버와 연결할 수 없습니다.");
+          });
+      }
+    </script>
   </body>
 </html>
