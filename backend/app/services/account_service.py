@@ -12,12 +12,19 @@ class AccountService:
         return account
     
     # 계좌 목록 조회
-    def get_accounts(self, db: Session, page: int=1,
-                      limit: int=10) -> list[Account]:
-        nOffset = (page-1) * limit
-        accounts = db.exec(
-            select(Account).offset(nOffset).limit(limit)
-        ).all()
+    def get_accounts(self, db: Session, user_id: int) -> list[Account]:
+        accounts = []
+        offset = 0
+        batch_size = 10
+
+        while True:
+            account_arr = db.query(Account).filter(Account.owner_id == user_id).offset(offset).limit(batch_size).all()
+            if not account_arr:
+                break
+
+            accounts.extend(account_arr)
+            offset += batch_size
+
         return accounts
     
     # 계좌 생성
