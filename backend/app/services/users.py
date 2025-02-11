@@ -3,7 +3,9 @@
 import bcrypt
 import time
 from sqlmodel import Session, select
-from app.schemas.users import User
+from app.models.account_model import User
+# from app.schemas.users import User
+from jose import jwt
 
 class UserService:
     def get_hashed_password(self, pwd:str)->str:
@@ -53,13 +55,17 @@ class UserService:
         #암호화된 비밀번호를 체크
         pass  # 로그인 처리 로직
 
-    def recover_password(self, db:Session, login_id:str, name:str):
+    def recover_password(self, db:Session, login_id:str, name:str)->str:
         statement = select(User).where(User.login_id == login_id, User.name == name)
-        result = db.exec(statement)
+        result = db.exec(statement).first()
+        get_pwd = result.password.decode('utf-8')
+        # recover=""
+        # recover += get_pwd[:3]
+        # recover += "*"*(len(get_pwd)-3)
         
-        recover=""
+        return get_pwd[:3]+"*"*(len(get_pwd)-3)
         #아이디 입력받기
         #이름 입력받기
         #암호 복호화
         #비밀번호 길이, 앞 3글자 넘겨주기
-        pass  # 비밀번호 찾기 처리 로직
+        # 비밀번호 찾기 처리 로직

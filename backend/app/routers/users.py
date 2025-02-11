@@ -9,7 +9,7 @@ from app.dependencies import get_db
 router = APIRouter()
 # 꼭 비동기 처리를 해야 하는가?
 @router.post("/signup")
-async def signup(req: UserSignupReq, #jwt Token 부분 추가해야 함
+def signup(req: UserSignupReq, #jwt Token 부분 추가해야 함
                  db=Depends(get_db),userService:UserService=Depends()):
     user = userService.signup_user(db,req.login_id,req.password,req.name)
     if not user:
@@ -20,7 +20,7 @@ async def signup(req: UserSignupReq, #jwt Token 부분 추가해야 함
     # 회원가입 처리
 
 @router.post("/login")
-async def login(req:UserSigninReq, #jwt Token 부분 추가해야 함
+def login(req:UserSigninReq, #jwt Token 부분 추가해야 함
                 db=Depends(get_db),userService:UserService=Depends()):
     user = userService.login_user(db,req.login_id,req.password)
     if not user:
@@ -31,14 +31,16 @@ async def login(req:UserSigninReq, #jwt Token 부분 추가해야 함
     # 로그인 처리
 
 @router.post("/logout")
-async def logout():
+def logout():
     pass  # 로그아웃 처리
 
 @router.post("/recover")
-async def recover(req:UserRecoverReq,
+def recover(req:UserRecoverReq,
                   db=Depends(get_db), userService:UserService=Depends()):
     user = userService.recover_password(db, req.login_id, req.name)
     if not user:
+        raise HTTPException(status_code=404,
+                            detail="NOT FOUND")
         pass #TODO Exception 처리
     
     return user

@@ -4,7 +4,6 @@ from datetime import datetime, timezone
 from typing import Optional
 from sqlmodel import SQLModel, Field
 
-
 class UserSigninReq(BaseModel):
     login_id: str
     password: str
@@ -19,9 +18,17 @@ class UserRecoverReq(BaseModel):
     name: str
     
 class User(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int
-    name: str
+    id: int | None = Field(default=None, primary_key=True) #user id
+    name:str = Field(index=True) #user name
+    
+    login_id:str = Field(index=True) #필수적인 요소인가?
+    password:str = Field(default = None) #password : hashed value
+    
+    #accounts: List[str] | None = Field(default_factory=list)
+    balance: int = 0 # account total money
+    
+    created_at: int | None = Field(index=True)
+    access_token : str | None = None
 
 class Account(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
