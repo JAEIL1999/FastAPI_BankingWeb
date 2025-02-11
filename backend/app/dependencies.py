@@ -1,6 +1,6 @@
 from sqlmodel import (SQLModel,Session, create_engine)
 
-db_url = 'sqlite:///./app/db/banking.db'
+db_url = 'sqlite:///./backend/app/db/banking.db'
 db_engine = create_engine(db_url, connect_args={"check_same_thread": False})
 
 def get_db():
