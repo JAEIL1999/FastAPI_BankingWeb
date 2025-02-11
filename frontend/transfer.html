@@ -1,14 +1,99 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>계좌이체</title>
-  </head>
-  <body>
-    <h1>Transfer</h1>
-    <button onclick="navigateTo('계좌조회')">계좌조회</button>
-    <button onclick="navigateTo('즐겨찾기')">즐겨찾기</button>
-    <script src="js/router.js"></script>  
-  </body>
+    <style>
+        /* 전체 페이지 스타일 */
+        body {
+            background-color: #d9d9d9; /* 어두운 배경 */
+            color: black;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+          background-color: #d9d9d9;
+          width: 90%;
+          max-width: 700px;
+          padding: 40px;
+          padding-left: 100px;
+          text-align: left;
+      }
+
+        /* 제목 스타일 */
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 50px;
+            font-weight: lighter;
+        }
+
+        /* 즐겨찾기 버튼 */
+        .favorite-btn {
+            background-color: #F9FF82;
+            border: none;
+            padding: 8px 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* 입력 필드 그룹 */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* 입력 필드 */
+        input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 150px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        /* 보내기 버튼 */
+        .send-btn {
+            background-color: #76D4FF;
+            color: white;
+            border: none;
+            padding: 12px 50px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1>계좌이체</h1>
+    <h2>어디로 돈을 보낼까요?</h2>
+    <button class="favorite-btn" onclick="navigateTo('즐겨찾기')">즐겨찾기</button>
+    <div class="input-group">
+        <input type="text" name="account_id" placeholder="계좌번호">
+        <input type="text" name="amount" placeholder="금액">
+    </div>
+    <button class="send-btn">보내기</button>
+  </div>
+    <script src="js/router.js"></script> 
+</body>
 </html>
+
