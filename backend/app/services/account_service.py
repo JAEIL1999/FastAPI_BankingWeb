@@ -34,7 +34,9 @@ class AccountService:
         return oldAccount
     
     def delete_account(self, db: Session, account_id: int):
-        account = self.get_account(db, account_id)
+        account = db.query(Account).filter(Account.account_id == account_id).first()
+        if not account:
+            raise HTTPException(status_code=404, detail="Post not found")
         db.delete(account)
         db.commit()
 
