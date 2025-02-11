@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.services.account_service import AccountService
-from app.schemas.account_schemas import Transfer,RespAccounts, Account, AccountCreate
+from app.schemas.account_schemas import Transfer, Account, UserAccounts
 from app.dependencies import get_db
 from sqlmodel import Session
 
