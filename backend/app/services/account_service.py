@@ -69,12 +69,19 @@ class AccountService:
         return {"status": "Transfer successful"}
     
     # 계좌이체 내역
-    def transfer_logs(db: Session, transfer_details: Transfer, user_id: int) -> Transfer_log:
+    def transfer_logs(self, db: Session, user_id: int) -> Transfer_log:
         user_logs = Transfer_log()
+        offset = 0
+        batch_size = 10
+
         while True:
-            log = db.query(Transactions).filter(Transactions.sender == user_id)
-            if log == None:
+            logs = db.query(Transactions).filter(Transactions.sender == user_id).offset(offset).limit(batch_size).all()
+
+            if not logs:
                 break
-            user_logs.transfer_list.append(log)
+            user_logs.transfer_list.extend(logs)  # 반환된 로그를 리스트에 추가
+
+            offset += batch_size
+            
         return user_logs
 
