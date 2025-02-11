@@ -6,25 +6,25 @@
     <title>Banking Web</title>
     <link rel="stylesheet" href="home.css">
   </head>
-  
   <body>
     <header>
-      <h1>Banking Web</h1>
+      <h1>Welcome to Banking Web</h1>
       <hr>
       </header>
 
     <main>
-      <section class = "image">
-        <img src = "image.jpg" alt = "TEAM6 소개" /> <!--TODO-->
+      <section id = "calendar">
+        <script src="js/calendar.js"></script>
       </section>
 
       <section class="button">
-        <button class="buttons" onclick="navigateTo('회원가입')">회원가입</button>
-        <button class="buttons" onclick="navigateTo('로그인')">로그인</button>
+        <p>안녕하세요</p>
+        <p>{홍길동}님</p>
+        <button class="buttons", id="button3" onclick="navigateTo('회원가입')">로그아웃</button> <!--TODO-->
       </section>
         
       <section>
-        <button class="button", id="button2", onclick="navigateTo('로그인')">계좌조회</button>
+        <button class="button", id="button2", onclick="navigateTo('계좌조회')">계좌조회</button>
       </section>
 
     <script src="js/router.js"></script>
