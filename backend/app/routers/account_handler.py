@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.services.account_service import AccountService
-from app.schemas.account_schemas import Transfer,RespAccounts, Account, AccountCreate
+from app.schemas.account_schemas import Transfer, Account, UserAccounts
 from app.dependencies import get_db
 from sqlmodel import Session
 
@@ -14,20 +14,12 @@ def transfer(transfer_detail: Transfer, db: Session=Depends(get_db)):
     return result
 
 # 계좌 목록
-@router.get("/users/account")
-def get_accounts(page: int=1, limit: int=10,
+@router.get("/users/account/{user_id}")
+def get_accounts(user_id: int,
                  session=Depends(get_db),
-                 service: AccountService = Depends()) -> RespAccounts:
-    if page < 1:
-        page = 1
-    if limit < 1 or limit > 10:
-        limit = 10
-    accounts_data = service.get_accounts(session, page, limit)
-    return RespAccounts(
-        accounts=accounts_data,
-        page = page,
-        limit = limit
-    )
+                 service: AccountService = Depends()) -> UserAccounts:
+    accounts_data = service.get_accounts(session, user_id)
+    return UserAccounts(accounts=accounts_data)
 
 # 계좌 생성 
 @router.post("/users/account", status_code=201)
