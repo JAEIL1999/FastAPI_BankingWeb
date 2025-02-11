@@ -90,12 +90,10 @@
       <div class="sub_container">
         <button class="back-btn" onclick="navigateTo('계좌이체')">이전</button>
         <h1>즐겨찾기</h1>
-        <!-- get_user_by_name 함수로 user별 즐겨찾기 목록 가져오기 시도해보자-->
         <input type="text" id="userId" placeholder="ID 입력" />
         <button onclick="loadFavorites()">조회</button>
         <button onclick="openPopup()">추가</button>
 
-        <!-- 팝업 -->
         <div class="popup" id="popup">
           <h3>즐겨찾기 추가</h3>
           <input type="text" id="popupUserId" placeholder="User ID" />
@@ -116,34 +114,49 @@
         <tbody></tbody>
       </table>
     </div>
-    <script src="js/router.js"></script>
 
     <script>
-      let favorites = [];
+      const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE3MzkyODkwMDZ9.hk2MDuCNEan0bD1OB4I97-4kchm1Iw0Gd-ik1NByTSo';  // 실제 JWT 토큰으로 교체
 
       function loadFavorites() {
-        const userId = document.getElementById("userId").value;
+        const userId = document.getElementById("userId").value.trim();  // 입력값에서 불필요한 공백 제거
+        if (!userId) {
+            alert("ID를 입력하세요.");
+            return;
+        }
+    
         const tableBody = document.querySelector("#favoritesTable tbody");
         tableBody.innerHTML = "";
-
-        const userFavorites = favorites.filter((fav) => fav.userId === userId);
-        userFavorites.forEach((fav, index) => {
-          const row = tableBody.insertRow();
-          row.insertCell(0).textContent = fav.accountId;
-
-          const confirmBtn = document.createElement("button");
-          confirmBtn.textContent = "확인";
-          confirmBtn.classList.add("confirm-btn");
-          confirmBtn.onclick = () => transferToAccount(fav.accountId);
-          row.insertCell(1).appendChild(confirmBtn);
-
-          const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "삭제";
-          deleteBtn.classList.add("delete-btn");
-          deleteBtn.onclick = () => deleteFavorite(index, userId);
-          row.insertCell(2).appendChild(deleteBtn);
-        });
+    
+        fetch(`http://127.0.0.1:8000/users/favorites?jwt_token=${jwtToken}`)
+            .then(response => response.json())
+            .then(data => {
+                const userFavorites = data.filter(fav => fav.user_id === parseInt(userId));  // 숫자로 비교
+                if (userFavorites.length === 0) {
+                    alert("해당 ID에 대한 즐겨찾기가 없습니다.");
+                }
+                userFavorites.forEach((fav, index) => {
+                    const row = tableBody.insertRow();
+                    row.insertCell(0).textContent = fav.account_id;
+    
+                    const confirmBtn = document.createElement("button");
+                    confirmBtn.textContent = "확인";
+                    confirmBtn.classList.add("confirm-btn");
+                    confirmBtn.onclick = () => transferToAccount(fav.user_id,fav.account_id);
+                    row.insertCell(1).appendChild(confirmBtn);
+    
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.textContent = "삭제";
+                    deleteBtn.classList.add("delete-btn");
+                    deleteBtn.onclick = () => deleteFavorite(fav.account_id);
+                    row.insertCell(2).appendChild(deleteBtn);
+                });
+            })
+            .catch(error => {
+                alert("즐겨찾기 로드 실패: " + error);
+            });
       }
+    
 
       function openPopup() {
         document.getElementById("popup").style.display = "block";
@@ -158,23 +171,39 @@
         const accountId = document.getElementById("popupAccountId").value;
 
         if (userId && accountId) {
-          favorites.push({ userId, accountId });
-          closePopup();
-          loadFavorites();
+          fetch("http://127.0.0.1:8000/favorites?jwt_token=" + jwtToken + "&account_id=" + accountId, {
+            method: 'POST',
+            body: JSON.stringify({ user_id: userId, account_id: accountId }),
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+            .then(response => response.json())
+            .then(data => {
+              alert("즐겨찾기 추가 성공");
+              closePopup();
+              loadFavorites();
+            })
+            .catch(error => alert("즐겨찾기 추가 실패: " + error));
         } else {
           alert("User ID와 Account ID를 입력하세요.");
         }
       }
 
-      function deleteFavorite(index, userId) {
-        favorites = favorites.filter(
-          (fav, i) => !(i === index && fav.userId === userId)
-        );
-        loadFavorites();
+      function deleteFavorite(accountId) {
+        fetch(`http://127.0.0.1:8000/favorites/${accountId}?jwt_token=${jwtToken}`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert("즐겨찾기 삭제 성공");
+            loadFavorites();
+          })
+          .catch(error => alert("즐겨찾기 삭제 실패: " + error));
       }
 
-      function transferToAccount(accountId) {
-        window.location.href = `transfer.html?account=${accountId}`;
+      function transferToAccount(userId,accountId) {
+        window.location.href = `transfer.html?user_id=${userId}&account_id=${accountId}`;
       }
     </script>
   </body>
