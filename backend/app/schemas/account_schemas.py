@@ -10,7 +10,5 @@ class Transfer(BaseModel):
 class Transfer_log(BaseModel):
     transfer_list: list[Transfer]
     
-class RespAccounts(BaseModel):
+class UserAccounts(BaseModel):
     accounts: List[Account]
-    page: int
-    limit: int
