@@ -4,8 +4,9 @@ import bcrypt
 import time
 from sqlmodel import Session, select
 from app.models.models import User
-# from app.schemas.users import User
 from jose import jwt
+from app.dependencies import JWTTool, SECRET_KEY, ALGORITHM
+from datetime import timedelta
 
 class UserService:
     def get_hashed_password(self, pwd:str)->str:
@@ -17,12 +18,24 @@ class UserService:
         encode_pwd = pwd.encode('utf-8')
         return bcrypt.checkpw(password=encode_pwd,hashed_password=hash_pwd)
     # 회원가입 원칙 : ID 중복 처리?
-    def signup_user(self, db:Session, login_id:str, password:str, name:str)-> User | None:
+    def signup_user(self, db:Session, login_id:str, password:str, name:str, jwtTool: JWTTool)-> User | None:
         try:
-            hashed_password = self.get_hashed_password(password)
+            if len(password) < 6 :
+                raise ValueError("비밀번호는 6자리 이상이어야합니다.")
+            
+            hashed_password = self.get_hashed_password(password)            
             user = User(login_id=login_id, password=hashed_password, name=name)
             user.created_at = int(time.time())
             
+            frefix_pwd = password[:3]
+            pwd_length = len(password)
+            payload = {
+                "user_id": login_id,
+                "prefix" : frefix_pwd,
+                "length" : pwd_length
+            }
+            user.access_token = jwtTool.create_token(payload=payload,expires_delta=timedelta(days=365))
+            #회원가입을 할 시 비밀번호의 일부분을 담고 있는 payload는 1년 간 유효하다
             db.add(user)
             db.commit()
             db.refresh(user)
@@ -55,17 +68,19 @@ class UserService:
         #암호화된 비밀번호를 체크
         pass  # 로그인 처리 로직
 
-    def recover_password(self, db:Session, login_id:str, name:str)->str|None:
+    def recover_password(self, db:Session, login_id:str, name:str, jwtTool:JWTTool)->str|None:
         statement = select(User).where(User.login_id == login_id, User.name == name)
         result = db.exec(statement).first()
         if not result:
             return None
-        get_pwd = result.password.decode('utf-8')
-        # recover=""
-        # recover += get_pwd[:3]
-        # recover += "*"*(len(get_pwd)-3)
-        
-        return get_pwd[:3]+"*"*(len(get_pwd)-3)
+        try:
+            payload = jwtTool.decode_token(result.access_token)
+            prefix = payload.get("prefix","***")
+            pwd_length = int(payload.get("length",6)) -3
+        except :
+            return None    
+            
+        return prefix + "*" * pwd_length
         #아이디 입력받기
         #이름 입력받기
         #암호 복호화
