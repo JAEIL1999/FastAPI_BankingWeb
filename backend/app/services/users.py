@@ -55,9 +55,11 @@ class UserService:
         #암호화된 비밀번호를 체크
         pass  # 로그인 처리 로직
 
-    def recover_password(self, db:Session, login_id:str, name:str)->str:
+    def recover_password(self, db:Session, login_id:str, name:str)->str|None:
         statement = select(User).where(User.login_id == login_id, User.name == name)
         result = db.exec(statement).first()
+        if not result:
+            return None
         get_pwd = result.password.decode('utf-8')
         # recover=""
         # recover += get_pwd[:3]
