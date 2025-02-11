@@ -6,14 +6,6 @@ from app.models.models import *
 create_db()
 app = FastAPI()
 
-@app.post("/user")
-def create_user(user: User,
-                   session = Depends(get_db)):
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-    return user
-
 # 홈 화면 라우터 포함
 app.include_router(home.router)
 
