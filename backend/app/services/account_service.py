@@ -44,8 +44,8 @@ class AccountService:
 
     def transfer_funds(transfer_details: Transfer, db: Session):
         # 계좌 정보 조회
-        sender = db.query(Account).filter(Account.owner_id == transfer_details.sender).first()
-        receiver = db.query(Account).filter(Account.owner_id == transfer_details.receiver).first()
+        sender = db.query(Account).filter(Account.account_id == transfer_details.sender).first()
+        receiver = db.query(Account).filter(Account.account_id == transfer_details.receiver).first()
         
         # 계좌가 존재하지 않으면 오류 처리
         if not sender or not receiver:
