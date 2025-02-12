@@ -78,7 +78,7 @@
     <header>
       <h1 style="color: black;">Account</h1>
       <!-- 각 버튼 클릭 시 navigateTo() 함수 호출 -->
-      <button onclick="navigateTo('home')" style="background-color: #58D3F7">홈</button>
+      <button onclick="navigateTo('user')" style="background-color: #58D3F7">홈</button>
       <button onclick="navigateTo('transfer')" style="background-color: #58D3F7">계좌이체</button>
       <button onclick="navigateTo('transactions')" style="background-color: #58D3F7">거래내역</button>
     </header>
@@ -98,8 +98,8 @@
     <script>
       // 간단한 페이지 이동 함수 (각 페이지는 별도의 HTML 파일로 존재한다고 가정)
       function navigateTo(page) {
-        if (page === 'home') {
-          window.location.href = 'home.html';
+        if (page === 'user') {
+          window.location.href = 'user.html';
         } else if (page === 'transfer') {
           window.location.href = 'transfer.html';
         } else if (page === 'transactions') {

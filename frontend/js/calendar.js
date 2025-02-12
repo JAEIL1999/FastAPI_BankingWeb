@@ -5,9 +5,9 @@ const backendUrl = "http://localhost:8000"; // FastAPI 서버 주소
 
 async function fetchTransactions() {
   const params = new URLSearchParams(window.location.search)
-  const userId = params.get("login_id");
+  const jwt_token = params.get("access_token");
   try {
-    const response = await fetch(`${backendUrl}/users/${userId}/transactions/monthly/${currentYear}/${currentMonth + 1}`);
+    const response = await fetch(`${backendUrl}/users/transactions/monthly/${currentYear}/${currentMonth + 1}?jwt_token=${jwt_token}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
