@@ -4,7 +4,8 @@ let currentMonth = new Date().getMonth(); // 0~11
 const backendUrl = "http://localhost:8000"; // FastAPI 서버 주소
 
 async function fetchTransactions() {
-  const userId = "test1"; // 실제 유저 ID로 변경
+  const params = new URLSearchParams(window.location.search)
+  const userId = params.get("login_id");
   try {
     const response = await fetch(`${backendUrl}/users/${userId}/transactions/monthly/${currentYear}/${currentMonth + 1}`);
     

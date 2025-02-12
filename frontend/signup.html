@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
-  </head>
-  <body>
-    <h1>SignUp</h1>
-    <button onclick="navigateTo('홈')">홈</button>
-    <script src="js/router.js"></script>
-  </body>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="signup-container">
+        <h2>SIGN UP</h2>
+        <form id="signupForm">
+            <input type="text" id="login_id" placeholder="아이디" required>
+            <input type="password" id="password" placeholder="비밀번호 (6자 이상)" required>
+            <input type="text" id="name" placeholder="이름" required>
+            <button type="submit">가입하기</button>
+        </form>
+        <p id="message"></p>
+        <p><a href="index.html">홈 화면으로 이동</a></p>
+        <p><a href="signin.html">로그인 화면으로 이동</a></p>
+    </div>
+    <script src="js/signup.js"></script>
+</body>
 </html>
