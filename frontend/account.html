@@ -4,60 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>계좌조회</title>
+    <link rel="stylesheet" href="account.css" />
     <style>
-      /* 기본 스타일 */
+      /* 예시 CSS: 필요에 따라 account.css로 별도 관리할 수 있습니다. */
       body {
         font-family: Arial, sans-serif;
-        background-color: #D8D8D8;
+        background-color: #f9f9f9;
         margin: 0;
-        padding: 0;
+        padding: 20px;
       }
-      /* 헤더 영역: 네비게이션 버튼 포함 */
-      header {
-        background-color: #F4FA58;
-        padding: 15px;
+      h1 {
         text-align: center;
-        color: white;
       }
-      header h1 {
-        margin: 0;
-        padding-bottom: 10px;
-      }
-      header button {
-        margin: 0 5px;
-        padding: 8px 16px;
-        font-size: 1em;
-        background-color: #ffffff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      header button:hover {
-        background-color: #ddd;
-      }
-      /* 컨텐츠 영역: 계좌 조회 */
       .container {
         max-width: 800px;
-        margin: 30px auto;
+        margin: 0 auto;
+        background-color: #fff;
         padding: 20px;
-        background-color: white;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      }
-      .form-group {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .form-group input[type="text"] {
-        padding: 8px;
-        font-size: 1em;
-        width: 300px;
-        margin-right: 10px;
-      }
-      .form-group button {
-        padding: 8px 16px;
-        font-size: 1em;
-        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       }
       table {
         width: 100%;
@@ -74,80 +39,64 @@
     </style>
   </head>
   <body>
-    <!-- 네비게이션 헤더 -->
-    <header>
-      <h1 style="color: black;">Account</h1>
-      <!-- 각 버튼 클릭 시 navigateTo() 함수 호출 -->
-      <button onclick="navigateTo('home')" style="background-color: #58D3F7">홈</button>
-      <button onclick="navigateTo('transfer')" style="background-color: #58D3F7">계좌이체</button>
-      <button onclick="navigateTo('transactions')" style="background-color: #58D3F7">거래내역</button>
-    </header>
-    
-    <!-- 계좌 조회 컨텐츠 영역 -->
     <div class="container">
-      <div class="form-group">
-        <label for="jwtToken">JWT 토큰:</label>
-        <input type="text" id="jwtToken" placeholder="JWT 토큰을 입력하세요" />
-        <button onclick="fetchAccounts()">조회</button>
+      <h1>계좌조회</h1>
+      <!-- 계좌 정보가 표시될 영역 -->
+      <div id="account-details">
+        <p>계좌 정보를 불러오는 중입니다...</p>
       </div>
-      <!-- 조회된 계좌 목록이 표시될 영역 -->
-      <div id="result"></div>
     </div>
-    
-    <!-- 스크립트: 페이지 이동 및 계좌 조회 로직 -->
+
     <script>
-      // 간단한 페이지 이동 함수 (각 페이지는 별도의 HTML 파일로 존재한다고 가정)
-      function navigateTo(page) {
-        if (page === 'home') {
-          window.location.href = 'home.html';
-        } else if (page === 'transfer') {
-          window.location.href = 'transfer.html';
-        } else if (page === 'transactions') {
-          window.location.href = 'transactions.html';
-        }
-      }
-      
-      // 계좌 조회 함수: 입력한 JWT 토큰을 사용하여 백엔드 API 호출
-      async function fetchAccounts() {
-        const jwtToken = document.getElementById("jwtToken").value.trim();
-        if (!jwtToken) {
-          alert("JWT 토큰을 입력해 주세요.");
-          return;
-        }
+      // 백엔드 API를 호출하여 계좌 정보를 가져오는 함수
+      async function fetchAccountDetails(userId) {
         try {
-          // 백엔드 API 호출 (예: /users/account/{jwt_token})
-          const response = await fetch(`http://localhost:8000/users/account/${jwtToken}`);
+          // user_id를 이용해 백엔드 API 호출 (예: /users/account/{user_id})
+          const response = await fetch(`http://127.0.0.1:8000/users/account/${jwt_token}`);
           if (!response.ok) {
-            throw new Error("계좌 조회에 실패하였습니다. 토큰을 확인해 주세요.");
+            throw new Error("계좌 정보를 불러올 수 없습니다.");
           }
           const data = await response.json();
           displayAccounts(data.accounts);
         } catch (error) {
-          alert(error.message);
+          console.error("Error:", error);
+          document.getElementById("account-details").innerText =
+            "계좌 정보를 가져올 수 없습니다.";
         }
       }
-      
-      // 조회된 계좌 목록을 표 형식으로 출력하는 함수
+
+      // 가져온 계좌 데이터를 테이블로 표시하는 함수
       function displayAccounts(accounts) {
-        const resultDiv = document.getElementById("result");
+        const container = document.getElementById("account-details");
         if (!accounts || accounts.length === 0) {
-          resultDiv.innerHTML = "<p>조회된 계좌가 없습니다.</p>";
+          container.innerHTML = "<p>조회된 계좌가 없습니다.</p>";
           return;
         }
         let html = "<table>";
         html += "<tr><th>계좌 ID</th><th>사용자 ID</th><th>계좌 번호</th><th>잔액</th></tr>";
         accounts.forEach(account => {
           html += `<tr>
-                    <td>${account.id}</td>
-                    <td>${account.user_id}</td>
-                    <td>${account.account_id}</td>
-                    <td>${account.balance}</td>
-                  </tr>`;
+                      <td>${account.id}</td>
+                      <td>${account.user_id}</td>
+                      <td>${account.account_id}</td>
+                      <td>${account.balance}</td>
+                   </tr>`;
         });
         html += "</table>";
-        resultDiv.innerHTML = html;
+        container.innerHTML = html;
+      }
+
+      // URL 쿼리 파라미터에서 user_id 값을 추출
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get("user_id");
+
+      if (userId) {
+        fetchAccountDetails(userId);
+      } else {
+        document.getElementById("account-details").innerText =
+          "사용자 ID가 제공되지 않았습니다.";
       }
     </script>
-    <script src="js/router.js"></script>
   </body>
 </html>
+

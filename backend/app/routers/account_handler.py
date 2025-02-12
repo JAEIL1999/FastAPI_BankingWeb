@@ -14,10 +14,13 @@ def transfer(transfer_detail: Transfer, db: Session=Depends(get_db)):
     return result
 
 # 계좌 목록
-@router.get("/users/account/{user_id}")
-def get_accounts(user_id: str,
+@router.get("/users/account/{jwt_token}")
+def get_accounts(jwt_token: str,
                  session=Depends(get_db),
-                 service: AccountService = Depends()) -> UserAccounts:
+                 service: AccountService = Depends(),
+                 decording: JWTTool = Depends()) -> UserAccounts:
+    payload = decording.decode_token(jwt_token)
+    user_id = payload["user_id"]
     accounts_data = service.get_accounts(session, user_id)
     return UserAccounts(accounts=accounts_data)
 
@@ -48,9 +51,13 @@ def transfer_log(jwt_token: str,
                  decording: JWTTool = Depends()) -> Transfer_log:
     payload = decording.decode_token(jwt_token)
     user_id = payload["user_id"]
-    sender = session.query(Account).filter(Account.user_id == user_id).first()
-    if sender is None:
-        raise HTTPException(status_code=404, detail="Account not found")
 
-    logs = service.transfer_logs(session, sender.account_id)
+    accounts = session.query(Account).filter(Account.user_id == user_id).all()
+    if accounts is None:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    account_ids = [account.account_id for account in accounts]
+
+    logs = service.transfer_logs(session, account_ids)
     return logs
+

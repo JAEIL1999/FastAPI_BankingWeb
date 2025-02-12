@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECOVER_PWD</title>
+    <!-- 외부 CSS 파일 연결 -->
+    <link rel="stylesheet" href="recover_styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>비밀번호 찾기</h2>
+        <form id="recoverForm">
+            <label for="login_id">아이디:</label>
+            <input type="text" id="login_id" name="login_id" required><br>
+
+            <label for="name">이름:</label>
+            <input type="text" id="name" name="name" required><br>
+            <button type="submit">비밀번호 찾기</button>
+            <p><a href="signin.html">로그인 화면으로 이동</a></p>
+        </form>
+        <p id="responseMessage"></p>
+    </div>
+
+    <script>
+        document.getElementById('recoverForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // 폼 제출 시 페이지 새로고침 방지
+
+            const loginId = document.getElementById('login_id').value;
+            const name = document.getElementById('name').value;
+
+            // API 호출을 위한 데이터
+            const requestData = { login_id: loginId, name: name };
+
+            fetch('http://localhost:8000/recover', {  // 백엔드 API URL을 여기에 맞게 수정
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseMessage = document.getElementById('responseMessage');
+                if (data.detail) {
+                    // 백엔드에서 오류 메시지를 보낸 경우
+                    responseMessage.textContent = "아이디 또는 이름을 찾을 수 없습니다";
+                    responseMessage.classList.add('error');
+                    responseMessage.classList.remove('success');
+                } else if (typeof data === "string") {
+                    // 성공 시 (예: "비밀번호는 ab*** 입니다.")
+                    responseMessage.textContent = data;
+                    responseMessage.classList.add('success');
+                    responseMessage.classList.remove('error');
+                } else {
+                    // 예기치 않은 응답 처리
+                    responseMessage.textContent = "알 수 없는 응답을 받았습니다.";
+                    responseMessage.classList.add('error');
+                    responseMessage.classList.remove('success');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('responseMessage').textContent = "서버 오류, 다시 시도해 주세요.";
+                document.getElementById('responseMessage').classList.add('error');
+                document.getElementById('responseMessage').classList.remove('success');
+            });
+        });
+    </script>
+</body>
+</html>

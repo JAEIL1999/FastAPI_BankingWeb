@@ -1,14 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from app.dependencies import get_db
+from app.dependencies import get_db, JWTTool
 from app.models.models import Account, Transactions, User
 from datetime import datetime, date
 
+
 router = APIRouter()
 
-@router.get("/users/{user_id}/transactions/monthly/{year}/{month}")
-def get_monthly_transactions(user_id: str, year: int, month: int, db: Session = Depends(get_db)):
+@router.get("/users/transactions/monthly/{year}/{month}")
+def get_monthly_transactions(year: int, month: int, jwt_token: str, 
+                             db: Session = Depends(get_db), decording: JWTTool = Depends()):
     # 유저의 모든 account_id 가져오기
+    payload = decording.decode_token(jwt_token)
+    user_id = payload["user_id"]
+    
     accounts = db.query(Account.account_id).filter(Account.user_id == user_id).all()
     account_ids = [account_id for (account_id,) in accounts]
 
@@ -45,8 +50,11 @@ def get_monthly_transactions(user_id: str, year: int, month: int, db: Session = 
     return daily_totals
 
 # 로그인 성공 후 이름 띄우기
-@router.get("/users/{user_id}/home")
-def get_name(user_id: str, db: Session = Depends(get_db)):
+@router.get("/users/home")
+def get_name(jwt_token: str, db: Session = Depends(get_db), decording: JWTTool = Depends()):
+    payload = decording.decode_token(jwt_token)
+    user_id = payload["user_id"]
+    
     user = db.query(User).filter(User.login_id == user_id).first()
 
      # 사용자 없으면 404 오류 발생
