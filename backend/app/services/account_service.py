@@ -12,7 +12,7 @@ class AccountService:
         return account
     
     # 계좌 목록 조회
-    def get_accounts(self, db: Session, user_id: int) -> list[Account]:
+    def get_accounts(self, db: Session, user_id: str) -> list[Account]:
         accounts = []
         offset = 0
         batch_size = 10
