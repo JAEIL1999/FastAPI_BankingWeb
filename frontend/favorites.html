@@ -115,8 +115,8 @@
     <script src="js/router.js"></script>
     <script>
       const params = new URLSearchParams(window.location.search);
-      const user_id = params.get("login_id");
-      
+      const user_id = params.get("user_id");
+
       function loadFavorites() {
         if (!user_id) {
           alert("ID를 찾을 수 없습니다.");
@@ -165,18 +165,15 @@
 
       function addFavorite() {
         const accountId = document.getElementById("popupAccountId").value;
-      
+
         if (accountId) {
-          fetch(
-            `http://127.0.0.1:8000/favorites/${user_id}`,
-            {
-              method: "POST",
-              body: JSON.stringify({ user_id: user_id, account_id: accountId }),
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
+          fetch(`http://127.0.0.1:8000/favorites/${user_id}`, {
+            method: "POST",
+            body: JSON.stringify({ user_id: user_id, account_id: accountId }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
             .then((response) => response.json())
             .then((data) => {
               alert("즐겨찾기 추가 성공");
@@ -188,15 +185,11 @@
           alert("Account ID를 입력하세요.");
         }
       }
-      
 
       function deleteFavorite(accountId) {
-        fetch(
-          `http://127.0.0.1:8000/favorites/${user_id}/${accountId}`,
-          {
-            method: "DELETE",
-          }
-        )
+        fetch(`http://127.0.0.1:8000/favorites/${user_id}/${accountId}`, {
+          method: "DELETE",
+        })
           .then((response) => response.json())
           .then((data) => {
             alert("즐겨찾기 삭제 성공");

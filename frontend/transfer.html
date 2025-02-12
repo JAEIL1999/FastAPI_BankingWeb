@@ -91,7 +91,7 @@
       <button class="back-btn" onclick="navigateTo('계좌조회')">이전</button>
       <h1>계좌이체</h1>
       <h2>어디로 돈을 보낼까요?</h2>
-      <button class="favorite-btn" onclick="navigateTo('즐겨찾기')">
+      <button class="favorite-btn" onclick="{navigateTo('즐겨찾기'); accountTofavorites();}">
         즐겨찾기
       </button>
       <div class="input-group">
@@ -114,6 +114,13 @@
     <script src="js/router.js"></script>
 
     <script>
+      const params = new URLSearchParams(window.location.search)
+      const userId = params.get("user_id");
+
+      function accountTofavorite() {
+        window.location.href = `favorites.html?user_id=${userId}`;
+      }
+      
       document.addEventListener("DOMContentLoaded", function () {
         // URL에서 쿼리 파라미터 가져오기
         const urlParams = new URLSearchParams(window.location.search);
