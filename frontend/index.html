@@ -4,25 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Banking Web</title>
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="home.css" />
   </head>
-  
+
   <body>
     <header>
       <h1>Banking Web</h1>
-      <hr>
-      </header>
+      <hr />
+    </header>
 
     <main>
-      <section class = "image">
-        <img src = "image.jpg" alt = "TEAM6 소개" /> <!--TODO-->
+      <section class="image">
+        <img src="image_final.jpg" alt="TEAM6 소개" />
       </section>
 
       <section class="button">
-        <button class="buttons" onclick="navigateTo('회원가입')">회원가입</button>
+        <button class="buttons" onclick="navigateTo('회원가입')">
+          회원가입
+        </button>
         <button class="buttons" onclick="navigateTo('로그인')">로그인</button>
       </section>
-        
+
       <section>
         <script>
           function showAlert_navigateTo(page) {
@@ -30,14 +32,22 @@
             navigateTo(page);
           }
         </script>
-        <button class="button", id="button2", onclick="showAlert_navigateTo('로그인')">계좌조회</button>
+        <button
+          class="button"
+          ,
+          id="button2"
+          ,
+          onclick="showAlert_navigateTo('로그인')"
+        >
+          계좌조회
+        </button>
       </section>
 
-    <script src="js/router.js"></script>
+      <script src="js/router.js"></script>
     </main>
 
     <footer>
-      <hr>
+      <hr />
       <p>© 2025 PNU mini bootcamp TEAM6</p>
     </footer>
   </body>
