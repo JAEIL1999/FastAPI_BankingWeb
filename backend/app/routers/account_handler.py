@@ -51,9 +51,13 @@ def transfer_log(jwt_token: str,
                  decording: JWTTool = Depends()) -> Transfer_log:
     payload = decording.decode_token(jwt_token)
     user_id = payload["user_id"]
-    sender = session.query(Account).filter(Account.user_id == user_id).first()
-    if sender is None:
-        raise HTTPException(status_code=404, detail="Account not found")
 
-    logs = service.transfer_logs(session, sender.account_id)
+    accounts = session.query(Account).filter(Account.user_id == user_id).all()
+    if accounts is None:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    account_ids = [account.account_id for account in accounts]
+
+    logs = service.transfer_logs(session, account_ids)
     return logs
+
