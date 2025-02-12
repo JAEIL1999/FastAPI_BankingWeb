@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from app.models.models import Account
+from app.models.models import Account, Transactions
 
 class Transfer(BaseModel):
     sender: int
@@ -8,7 +8,7 @@ class Transfer(BaseModel):
     amount: float
 
 class Transfer_log(BaseModel):
-    transfer_list: list[Transfer]
+    transfer_list: list[Transactions]
     
 class UserAccounts(BaseModel):
     accounts: List[Account]
