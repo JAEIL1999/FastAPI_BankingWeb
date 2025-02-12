@@ -41,12 +41,12 @@ class Account(SQLModel, table=True):
 
 class Transactions(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
-    sender: int = Field(foreign_key="account.owner_id")
-    receiver: int = Field(foreign_key="account.owner_id")
+    sender: int = Field(foreign_key="account.account_id") # 주는 계좌
+    receiver: int = Field(foreign_key="account.account_id") # 받는 계좌
     amount: int
     timestamp: datetime = Field(default=datetime.now(timezone.utc))
     
 class Favorite(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int
+    user_id: str
     account_id: int

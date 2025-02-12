@@ -34,7 +34,7 @@ hr {
 
 #calendar {
   float: left;
-  margin-top: 30px;
+  margin-top: 20px;
   margin-left: 80px;
   width: 1000px; /* 이미지 크기 설정 */
   height: 500px;
@@ -68,7 +68,7 @@ th, td {
 td {
   vertical-align: top;
   height: 40px; /* 셀 높이 설정 */
-  font-size: 22px;
+  font-size: 20px;
 }
 
 th {
@@ -76,6 +76,20 @@ th {
   height: 10px;
   vertical-align: center;
   font-size: 18px;
+}
+
+.out, .in {
+  display: block; /* 블록 요소로 변경하여 줄바꿈 */
+  font-weight: normal;
+  font-size: 25px;
+}
+
+.out {
+  color: rgb(255, 217, 0);
+}
+
+.in {
+  color: #76D4FF;
 }
 
 .button {
@@ -118,12 +132,12 @@ th {
 .button p {
   text-align: right;
   font-size: 35px;
-  margin: 10px;
+  margin: 8px;
 }
 
 /* 하단 footer 스타일 */
 footer {
   clear: both;
   text-align: center;
-  margin-top: 20px;
+  margin-top: 53px;
 }

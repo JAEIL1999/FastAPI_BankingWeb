@@ -19,7 +19,28 @@
 
       <section class="button">
         <p>안녕하세요</p>
-        <p>{홍길동}님</p>
+        <p id="username">님</p>
+        <script>
+          async function fetchUserName(userId) {
+              try {
+                  // 백엔드 API 호출
+                  const response = await fetch(`http://127.0.0.1:8000/users/${userId}/home`);
+                  if (!response.ok) {
+                      throw new Error("사용자 정보를 불러올 수 없습니다.");
+                  }
+                  const data = await response.json();
+                  document.getElementById("username").innerText = `${data.name}님`; // 사용자 이름 업데이트
+              } catch (error) {
+                  console.error("Error:", error);
+                  document.getElementById("username").innerText = "사용자 정보를 가져올 수 없습니다.";
+              }
+          }
+  
+          // 예제 user_id (로그인 후 저장된 ID를 여기에 넣어야 함)
+          const userId = "test1";  // 실제로는 로그인 후 동적으로 할당해야 함
+          fetchUserName(userId);
+        </script>
+        
         <button class="buttons", id="button3" onclick="navigateTo('회원가입')">로그아웃</button> <!--TODO-->
       </section>
         
@@ -32,7 +53,7 @@
 
     <footer>
       <hr>
-      <p>© 2025 PNU mini bootcamp</p>
+      <p>© 2025 PNU mini bootcamp TEAM6</p>
     </footer>
   </body>
 </html>
