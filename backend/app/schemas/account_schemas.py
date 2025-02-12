@@ -8,7 +8,7 @@ class Transfer(BaseModel):
     amount: float
 
 class Transfer_log(BaseModel):
-    transfer_list: list[Transfer]
+    transfer_list: list[Transactions]
     
 class UserAccounts(BaseModel):
     accounts: List[Account]
