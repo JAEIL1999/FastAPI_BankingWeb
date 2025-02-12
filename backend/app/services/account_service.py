@@ -18,7 +18,7 @@ class AccountService:
         batch_size = 10
 
         while True:
-            account_arr = db.query(Account).filter(Account.owner_id == user_id).offset(offset).limit(batch_size).all()
+            account_arr = db.query(Account).filter(Account.user_id == user_id).offset(offset).limit(batch_size).all()
             if not account_arr:
                 break
 
