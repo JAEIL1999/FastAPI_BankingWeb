@@ -9,7 +9,7 @@ router = APIRouter()
 @router.get("/users/{user_id}/transactions/monthly/{year}/{month}")
 def get_monthly_transactions(user_id: str, year: int, month: int, db: Session = Depends(get_db)):
     # 유저의 모든 account_id 가져오기
-    accounts = db.query(Account.account_id).filter(Account.owner_id == user_id).all()
+    accounts = db.query(Account.account_id).filter(Account.user_id == user_id).all()
     account_ids = [account_id for (account_id,) in accounts]
 
     if not account_ids:
