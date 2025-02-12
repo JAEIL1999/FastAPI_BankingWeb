@@ -21,7 +21,7 @@
         <p>안녕하세요</p>
         <p id="username">님</p>
         <script>
-          async function fetchUserName(jwt_tokend) {
+          async function fetchUserName(jwt_token) {
               try {
                   // 백엔드 API 호출
                   const response = await fetch(`http://127.0.0.1:8000/users/home?jwt_token=${jwt_token}`);
@@ -41,7 +41,7 @@
           const jwt_token = params.get("access_token");  // 실제로는 로그인 후 동적으로 할당해야 함
           fetchUserName(jwt_token);
 
-          function userTOaccount(jwt_token) {
+          function userTOaccount() {
             window.location.href = `account.html?jwt_token=${jwt_token}`;
           }
         </script>
@@ -50,7 +50,7 @@
       </section>
         
       <section>
-        <button class="button", id="button2", onclick="navigateTo('계좌조회'); userTOaccount(userId);">계좌조회</button>
+        <button class="button", id="button2", onclick="navigateTo('계좌조회'); userTOaccount();">계좌조회</button>
       </section>
 
     <script src="js/router.js"></script>
