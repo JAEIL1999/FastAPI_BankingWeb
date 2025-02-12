@@ -34,9 +34,9 @@ class User(SQLModel, table=True):
     access_token : str | None = None
 
 class Account(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     user_id: str
-    account_id: int
+    account_id: int = Field(sa_column=Column("account_id", String, unique=True))
     balance: int
 
 class Transactions(SQLModel, table=True):
