@@ -208,3 +208,16 @@
     </script>
   </body>
 </html>
+
+function loginToHome(userId) {
+  window.location.href = `user.html?user_id=${userId}`;
+}
+
+
+
+function loginToFavorite(userId) {
+  window.location.href = `favorite.html?user_id=${userId}&account_id=${accountId}`;
+}
+function transferToAccount(userId) {
+  window.location.href = `transfer.html?user_id=${userId}&account_id=${accountId}`;
+}

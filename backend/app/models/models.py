@@ -35,7 +35,7 @@ class User(SQLModel, table=True):
 
 class Account(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    owner_id: int
+    user_id: str
     account_id: int
     balance: int
 
