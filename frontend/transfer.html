@@ -115,10 +115,10 @@
 
     <script>
       const params = new URLSearchParams(window.location.search)
-      const userId = params.get("user_id");
+      const jwt_token = params.get("jwt_token");
 
       function accountTofavorite() {
-        window.location.href = `favorites.html?user_id=${userId}`;
+        window.location.href = `favorites.html?jwt_token=${jwt_token}`;
       }
       
       document.addEventListener("DOMContentLoaded", function () {
