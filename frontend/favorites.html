@@ -90,13 +90,11 @@
       <div class="sub_container">
         <button class="back-btn" onclick="navigateTo('계좌이체')">이전</button>
         <h1>즐겨찾기</h1>
-        <input type="text" id="userId" placeholder="ID 입력" />
         <button onclick="loadFavorites()">조회</button>
         <button onclick="openPopup()">추가</button>
 
         <div class="popup" id="popup">
           <h3>즐겨찾기 추가</h3>
-          <input type="text" id="popupUserId" placeholder="User ID" />
           <input type="text" id="popupAccountId" placeholder="Account ID" />
           <button onclick="addFavorite()">확인</button>
           <button onclick="closePopup()">취소</button>
@@ -114,49 +112,48 @@
         <tbody></tbody>
       </table>
     </div>
-
+    <script src="js/router.js"></script>
     <script>
-      const jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE3MzkyODkwMDZ9.hk2MDuCNEan0bD1OB4I97-4kchm1Iw0Gd-ik1NByTSo';  // 실제 JWT 토큰으로 교체
+      const params = new URLSearchParams(window.location.search);
+      const user_id = params.get("user_id");
 
       function loadFavorites() {
-        const userId = document.getElementById("userId").value.trim();  // 입력값에서 불필요한 공백 제거
-        if (!userId) {
-            alert("ID를 입력하세요.");
-            return;
+        if (!user_id) {
+          alert("ID를 찾을 수 없습니다.");
+          return;
         }
-    
+
         const tableBody = document.querySelector("#favoritesTable tbody");
         tableBody.innerHTML = "";
-    
-        fetch(`http://127.0.0.1:8000/users/favorites?jwt_token=${jwtToken}`)
-            .then(response => response.json())
-            .then(data => {
-                const userFavorites = data.filter(fav => fav.user_id === parseInt(userId));  // 숫자로 비교
-                if (userFavorites.length === 0) {
-                    alert("해당 ID에 대한 즐겨찾기가 없습니다.");
-                }
-                userFavorites.forEach((fav, index) => {
-                    const row = tableBody.insertRow();
-                    row.insertCell(0).textContent = fav.account_id;
-    
-                    const confirmBtn = document.createElement("button");
-                    confirmBtn.textContent = "확인";
-                    confirmBtn.classList.add("confirm-btn");
-                    confirmBtn.onclick = () => transferToAccount(fav.user_id,fav.account_id);
-                    row.insertCell(1).appendChild(confirmBtn);
-    
-                    const deleteBtn = document.createElement("button");
-                    deleteBtn.textContent = "삭제";
-                    deleteBtn.classList.add("delete-btn");
-                    deleteBtn.onclick = () => deleteFavorite(fav.account_id);
-                    row.insertCell(2).appendChild(deleteBtn);
-                });
-            })
-            .catch(error => {
-                alert("즐겨찾기 로드 실패: " + error);
+
+        fetch(`http://127.0.0.1:8000/users/favorites/${user_id}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const userFavorites = data.filter((fav) => fav.user_id === user_id); // 숫자로 비교
+            if (userFavorites.length === 0) {
+              alert("해당 ID에 대한 즐겨찾기가 없습니다.");
+            }
+            userFavorites.forEach((fav, index) => {
+              const row = tableBody.insertRow();
+              row.insertCell(0).textContent = fav.account_id;
+
+              const confirmBtn = document.createElement("button");
+              confirmBtn.textContent = "확인";
+              confirmBtn.classList.add("confirm-btn");
+              confirmBtn.onclick = () => goToTransferPage(fav.account_id);
+              row.insertCell(1).appendChild(confirmBtn);
+
+              const deleteBtn = document.createElement("button");
+              deleteBtn.textContent = "삭제";
+              deleteBtn.classList.add("delete-btn");
+              deleteBtn.onclick = () => deleteFavorite(fav.account_id);
+              row.insertCell(2).appendChild(deleteBtn);
             });
+          })
+          .catch((error) => {
+            alert("즐겨찾기 로드 실패: " + error);
+          });
       }
-    
 
       function openPopup() {
         document.getElementById("popup").style.display = "block";
@@ -167,43 +164,42 @@
       }
 
       function addFavorite() {
-        const userId = document.getElementById("popupUserId").value;
         const accountId = document.getElementById("popupAccountId").value;
 
-        if (userId && accountId) {
-          fetch("http://127.0.0.1:8000/favorites?jwt_token=" + jwtToken + "&account_id=" + accountId, {
-            method: 'POST',
-            body: JSON.stringify({ user_id: userId, account_id: accountId }),
+        if (accountId) {
+          fetch(`http://127.0.0.1:8000/favorites/${user_id}`, {
+            method: "POST",
+            body: JSON.stringify({ user_id: user_id, account_id: accountId }),
             headers: {
-              'Content-Type': 'application/json',
-            }
+              "Content-Type": "application/json",
+            },
           })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
               alert("즐겨찾기 추가 성공");
               closePopup();
-              loadFavorites();
+              loadFavorites(); // 즐겨찾기 추가 후, 목록을 새로 고침
             })
-            .catch(error => alert("즐겨찾기 추가 실패: " + error));
+            .catch((error) => alert("즐겨찾기 추가 실패: " + error));
         } else {
-          alert("User ID와 Account ID를 입력하세요.");
+          alert("Account ID를 입력하세요.");
         }
       }
 
       function deleteFavorite(accountId) {
-        fetch(`http://127.0.0.1:8000/favorites/${accountId}?jwt_token=${jwtToken}`, {
-          method: 'DELETE'
+        fetch(`http://127.0.0.1:8000/favorites/${user_id}/${accountId}`, {
+          method: "DELETE",
         })
-          .then(response => response.json())
-          .then(data => {
+          .then((response) => response.json())
+          .then((data) => {
             alert("즐겨찾기 삭제 성공");
             loadFavorites();
           })
-          .catch(error => alert("즐겨찾기 삭제 실패: " + error));
+          .catch((error) => alert("즐겨찾기 삭제 실패: " + error));
       }
 
-      function transferToAccount(userId,accountId) {
-        window.location.href = `transfer.html?user_id=${userId}&account_id=${accountId}`;
+      function goToTransferPage(accountId) {
+        window.location.href = `transfer.html?account_id=${accountId}&is_receiver=true`;
       }
     </script>
   </body>

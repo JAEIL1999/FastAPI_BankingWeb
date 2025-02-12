@@ -5,7 +5,7 @@ from app.models.models import Account, Transactions
 class Transfer(BaseModel):
     sender: int
     receiver: int
-    amount: float
+    amount: int
 
 class Transfer_log(BaseModel):
     transfer_list: list[Transactions]
