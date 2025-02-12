@@ -46,7 +46,7 @@ def delete_account(account_id: int,
 @router.get("/user/{name}")
 def transfer_log(name: str,
                  session=Depends(get_db),
-                 service: AccountService = Depends()) -> Transfer_log:
+                 service: AccountService = Depends()):
     pass
     # TODO: name을 token으로 변경, 토큰을 입력받는다.
     # TODO: user_id = 입력받은 토큰을 유저 id로 바꿔주는 로직 추가
