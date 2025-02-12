@@ -37,11 +37,12 @@
           }
   
           // 예제 user_id (로그인 후 저장된 ID를 여기에 넣어야 함)
-          const userId = "test1";  // 실제로는 로그인 후 동적으로 할당해야 함
+          const params = new URLSearchParams(window.location.search)
+          const userId = params.get("login_id");  // 실제로는 로그인 후 동적으로 할당해야 함
           fetchUserName(userId);
         </script>
         
-        <button class="buttons", id="button3" onclick="navigateTo('회원가입')">로그아웃</button> <!--TODO-->
+        <button class="buttons", id="button3" onclick="navigateTo('홈')">로그아웃</button> <!--TODO-->
       </section>
         
       <section>

@@ -2,6 +2,7 @@
 function navigateTo(page) {
   const routes = {
     홈: "index.html",
+    유저: "user.html",
     회원가입: "signup.html",
     로그인: "signin.html",
     계좌조회: "account.html",

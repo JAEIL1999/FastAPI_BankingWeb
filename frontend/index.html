@@ -24,7 +24,13 @@
       </section>
         
       <section>
-        <button class="button", id="button2", onclick="navigateTo('로그인')">계좌조회</button>
+        <script>
+          function showAlert_navigateTo(page) {
+            alert("로그인이 필요한 서비스입니다.");
+            navigateTo(page);
+          }
+        </script>
+        <button class="button", id="button2", onclick="showAlert_navigateTo('로그인')">계좌조회</button>
       </section>
 
     <script src="js/router.js"></script>
