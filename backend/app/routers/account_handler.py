@@ -52,5 +52,5 @@ def transfer_log(jwt_token: str,
     payload = decording.decode_token(jwt_token)
     user_id = payload["user_id"]
 
-    logs = AccountService.transfer_logs(session, user_id)
+    logs = service.transfer_logs(session, user_id)
     return logs
