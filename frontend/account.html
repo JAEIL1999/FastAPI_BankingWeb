@@ -6,53 +6,125 @@
     <title>계좌조회</title>
     <link rel="stylesheet" href="account.css" />
     <style>
-      /* 예시 CSS: 필요에 따라 account.css로 별도 관리할 수 있습니다. */
+      /* 기본 스타일 (필요시 account.css로 분리 가능) */
       body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9;
         margin: 0;
-        padding: 20px;
+        padding: 0;
       }
-      h1 {
+      header {
+        background-color: #F9FF82;
+        color: white;
+        padding: 15px;
         text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        padding-bottom: 10px;
+      }
+      header button {
+        margin: 0 5px;
+        padding: 8px 16px;
+        font-size: 1em;
+        background-color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      header button:hover {
+        background-color: #ddd;
       }
       .container {
         max-width: 800px;
-        margin: 0 auto;
+        margin: 20px auto;
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      h2 {
+        text-align: center;
       }
       table {
         width: 100%;
         border-collapse: collapse;
         margin-top: 20px;
       }
-      table, th, td {
-        border: 1px solid #ddd;
-      }
       th, td {
+        border: 1px solid #ddd;
         padding: 8px;
         text-align: center;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #fff;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
       }
     </style>
   </head>
   <body>
+    <!-- 네비게이션 헤더 -->
+    <header>
+      <h1 style="color: #1E1E1E">Accounts</h1>
+      <button onclick="navigateTo('홈')" style="background-color: #76D4FF;">홈</button>
+      <button onclick="navigateTo('계좌이체')" style="background-color: #76D4FF;">계좌이체</button>
+      <button onclick="navigateTo('거래내역')" style="background-color: #76D4FF;">거래내역</button>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
     <div class="container">
-      <h1>계좌조회</h1>
-      <!-- 계좌 정보가 표시될 영역 -->
+      <h2>내 계좌 목록</h2>
       <div id="account-details">
         <p>계좌 정보를 불러오는 중입니다...</p>
       </div>
     </div>
 
+    <!-- 하단 푸터 -->
+    <footer>
+      <p>© 2025 PNU mini bootcamp TEAM6</p>
+    </footer>
+
     <script>
+      function goToTransferPage() {
+        const accountId = "accountId"; // 동적으로 계좌 ID를 가져오는 부분
+        window.location.href = `transfer.html?account_id=${accountId}&is_sender=true`;
+      }
+      // 간단한 네비게이션 함수 (필요시 js/router.js로 분리하여 관리)
+      function navigateTo(page) {
+        if (page === '홈') {
+          // 홈 버튼 클릭 시 user.html로 이동 (예시)
+          window.location.href = 'user.html';
+        } else if (page === '계좌이체') {
+          window.location.href = 'transfer.html';
+        } else if (page === '거래내역') {
+          window.location.href = 'transactions.html';
+        }
+      }
+
+      // URL 쿼리 파라미터에서 jwt_token 값을 추출
+      const params = new URLSearchParams(window.location.search);
+      const jwt_token = params.get("jwt_token");
+      console.log("Account.html에서 추출한 JWT 토큰:", jwt_token);
+
+      if (!jwt_token) {
+        document.getElementById("account-details").innerText =
+          "JWT 토큰이 제공되지 않았습니다.";
+      } else {
+        fetchAccountDetails(jwt_token);
+      }
+
       // 백엔드 API를 호출하여 계좌 정보를 가져오는 함수
-      async function fetchAccountDetails(userId) {
+      async function fetchAccountDetails(jwt_token) {
         try {
-          // user_id를 이용해 백엔드 API 호출 (예: /users/account/{user_id})
-          const response = await fetch(`http://127.0.0.1:8000/users/account/${jwt_token}`);
+          // 쿼리 파라미터로 jwt_token 전달 (백엔드 핸들러가 해당 방식으로 작동함)
+          const response = await fetch(`http://127.0.0.1:8000/users/account?jwt_token=${jwt_token}`);
           if (!response.ok) {
             throw new Error("계좌 정보를 불러올 수 없습니다.");
           }
@@ -65,7 +137,7 @@
         }
       }
 
-      // 가져온 계좌 데이터를 테이블로 표시하는 함수
+      // 받아온 계좌 데이터를 테이블로 렌더링하는 함수
       function displayAccounts(accounts) {
         const container = document.getElementById("account-details");
         if (!accounts || accounts.length === 0) {
@@ -84,17 +156,6 @@
         });
         html += "</table>";
         container.innerHTML = html;
-      }
-
-      // URL 쿼리 파라미터에서 user_id 값을 추출
-      const params = new URLSearchParams(window.location.search);
-      const userId = params.get("user_id");
-
-      if (userId) {
-        fetchAccountDetails(userId);
-      } else {
-        document.getElementById("account-details").innerText =
-          "사용자 ID가 제공되지 않았습니다.";
       }
     </script>
   </body>
