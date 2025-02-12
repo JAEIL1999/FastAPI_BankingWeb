@@ -24,8 +24,7 @@ def get_accounts(jwt_token: str,
     accounts_data = service.get_accounts(session, user_id)
     return UserAccounts(accounts=accounts_data)
 
-# TODO: 계좌 생성, 계좌 삭제는 프론트엔드 연결작업만 처리하면 된다.
-# TODO: POST, DELETE를 어떻게 프론트엔드에 연결할지 고민해보기
+
 # 계좌 생성 
 @router.post("/users/account", status_code=201)
 def create_account(account: Account,

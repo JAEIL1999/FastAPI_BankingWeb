@@ -50,4 +50,4 @@ def recover(req:UserRecoverReq,
                             detail="NOT FOUND")
     
     return user
-    pass  # 비밀번호 찾기 처리
+    # 비밀번호 찾기 처리
