@@ -16,7 +16,7 @@ def signup(req: UserSignupReq, #jwt Token 부분 추가해야 함
     
     if not user:
         raise HTTPException(status_code=400,
-                            detail="SOMETHING WRONG!!") 
+                            detail="SOMETHING WRONG!!")
     return user
     # 회원가입 처리
 
@@ -27,7 +27,7 @@ def login(req:UserSigninReq, #jwt Token 부분 추가해야 함
     user = userService.login_user(db,req.login_id,req.password)
     if not user:
         raise HTTPException(status_code=401,
-                            detail="FAILED")
+                            detail="CAN'T SIGN_IN")
     payload = {
         "user_id": req.login_id
     }

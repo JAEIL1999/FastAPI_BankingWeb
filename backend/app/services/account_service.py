@@ -12,13 +12,13 @@ class AccountService:
         return account
     
     # 계좌 목록 조회
-    def get_accounts(self, db: Session, user_id: int) -> list[Account]:
+    def get_accounts(self, db: Session, user_id: str) -> list[Account]:
         accounts = []
         offset = 0
         batch_size = 10
 
         while True:
-            account_arr = db.query(Account).filter(Account.owner_id == user_id).offset(offset).limit(batch_size).all()
+            account_arr = db.query(Account).filter(Account.user_id == user_id).offset(offset).limit(batch_size).all()
             if not account_arr:
                 break
 
