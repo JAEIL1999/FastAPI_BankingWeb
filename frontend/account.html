@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>계좌조회</title>
+    <title>계좌조회 및 생성</title>
     <link rel="stylesheet" href="account.css" />
     <style>
-      /* 기본 스타일 (필요시 account.css로 분리 가능) */
+      /* 기본 스타일 */
       body {
         font-family: Arial, sans-serif;
         background-color: #f9f9f9;
@@ -67,6 +67,48 @@
         width: 100%;
         bottom: 0;
       }
+      /* 계좌 생성 폼 및 버튼 스타일 */
+      #toggle-create-account-btn {
+        display: block;
+        margin: 0 auto 20px;
+        padding: 10px 20px;
+        font-size: 1em;
+        background-color: #76D4FF;
+        color: #1E1E1E;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #toggle-create-account-btn:hover {
+        background-color: #5cb8e6;
+      }
+      #create-account-form-container {
+        display: none;
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      #create-account-form label {
+        display: block;
+        margin: 10px 0 5px;
+      }
+      #create-account-form input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+      }
+      #create-account-form button {
+        padding: 8px 16px;
+        background-color: #76D4FF;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #1E1E1E;
+      }
+      #create-account-form button:hover {
+        background-color: #5cb8e6;
+      }
     </style>
   </head>
   <body>
@@ -81,6 +123,28 @@
     <!-- 메인 컨텐츠 영역 -->
     <div class="container">
       <h2>내 계좌 목록</h2>
+
+      <!-- 계좌 생성 폼 토글 버튼 -->
+      <button id="toggle-create-account-btn" onclick="toggleCreateAccountForm()">계좌 생성하기</button>
+
+      <!-- 계좌 생성 폼 (숨김 상태에서 토글) -->
+      <div id="create-account-form-container">
+        <form id="create-account-form">
+          <!-- 실제 상황에서는 로그인한 사용자의 ID를 사용하거나 JWT에서 추출할 수 있습니다. -->
+          <label for="user_id">사용자 ID:</label>
+          <input type="text" id="user_id" name="user_id" required />
+
+          <label for="account_id">계좌 번호:</label>
+          <input type="text" id="account_id" name="account_id" required />
+
+          <label for="balance">초기 잔액:</label>
+          <input type="number" id="balance" name="balance" value="0" required />
+
+          <button type="submit">계좌 생성</button>
+        </form>
+      </div>
+
+      <!-- 기존 계좌 목록 표시 영역 -->
       <div id="account-details">
         <p>계좌 정보를 불러오는 중입니다...</p>
       </div>
@@ -92,40 +156,37 @@
     </footer>
 
     <script>
-      function goToTransferPage() {
-        const accountId = "accountId"; // 동적으로 계좌 ID를 가져오는 부분
-        window.location.href = `transfer.html?account_id=${accountId}&is_sender=true`;
-      }
-      // 간단한 네비게이션 함수 (필요시 js/router.js로 분리하여 관리)
+      // 네비게이션 함수
       function navigateTo(page) {
+      // 현재 URL에서 jwt_token을 추출합니다.
+        const params = new URLSearchParams(window.location.search);
+        const jwt_token = params.get("jwt_token");
+
         if (page === '홈') {
-          // 홈 버튼 클릭 시 user.html로 이동 (예시)
-          window.location.href = 'user.html';
+          window.location.href = `user.html?jwt_token=${jwt_token}`;
         } else if (page === '계좌이체') {
-          window.location.href = 'transfer.html';
-          goToTransferPage()
+          window.location.href = `transfer.html?jwt_token=${jwt_token}`;
         } else if (page === '거래내역') {
-          window.location.href = 'transactions.html';
+          window.location.href = `transaction_logs.html?jwt_token=${jwt_token}`;
         }
       }
 
-      // URL 쿼리 파라미터에서 jwt_token 값을 추출
+      // URL에서 jwt_token 추출 (GET 요청 시 사용)
       const params = new URLSearchParams(window.location.search);
       const jwt_token = params.get("jwt_token");
-      console.log("Account.html에서 추출한 JWT 토큰:", jwt_token);
+      console.log("추출한 JWT 토큰:", jwt_token);
 
       if (!jwt_token) {
-        document.getElementById("account-details").innerText =
-          "JWT 토큰이 제공되지 않았습니다.";
+        document.getElementById("account-details").innerText = "JWT 토큰이 제공되지 않았습니다.";
       } else {
+        // GET 요청은 경로 파라미터 방식 사용
         fetchAccountDetails(jwt_token);
       }
 
-      // 백엔드 API를 호출하여 계좌 정보를 가져오는 함수
-      async function fetchAccountDetails(jwt_token) {
+      // 계좌 목록을 가져오는 함수 (GET 요청, jwt_token을 경로에 포함)
+      async function fetchAccountDetails(token) {
         try {
-          // 쿼리 파라미터로 jwt_token 전달 (백엔드 핸들러가 해당 방식으로 작동함)
-          const response = await fetch(`http://127.0.0.1:8000/users/account?jwt_token=${jwt_token}`);
+          const response = await fetch(`http://127.0.0.1:8000/users/account/${token}`);
           if (!response.ok) {
             throw new Error("계좌 정보를 불러올 수 없습니다.");
           }
@@ -133,12 +194,11 @@
           displayAccounts(data.accounts);
         } catch (error) {
           console.error("Error:", error);
-          document.getElementById("account-details").innerText =
-            "계좌 정보를 가져올 수 없습니다.";
+          document.getElementById("account-details").innerText = "계좌 정보를 가져올 수 없습니다.";
         }
       }
 
-      // 받아온 계좌 데이터를 테이블로 렌더링하는 함수
+      // 받아온 계좌 데이터를 테이블로 렌더링
       function displayAccounts(accounts) {
         const container = document.getElementById("account-details");
         if (!accounts || accounts.length === 0) {
@@ -158,7 +218,48 @@
         html += "</table>";
         container.innerHTML = html;
       }
+
+      // 계좌 생성 폼 토글 함수
+      function toggleCreateAccountForm() {
+        const formContainer = document.getElementById("create-account-form-container");
+        formContainer.style.display = (formContainer.style.display === "none" || formContainer.style.display === "") ? "block" : "none";
+      }
+
+      // 계좌 생성 폼 제출 처리 (POST 요청)
+      document.getElementById("create-account-form").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        // 폼 입력 값 추출
+        const user_id = document.getElementById("user_id").value;
+        const account_id = document.getElementById("account_id").value;
+        const balance = parseInt(document.getElementById("balance").value, 10);
+
+        const accountData = {
+          user_id: user_id,
+          account_id: account_id,
+          balance: balance
+        };
+
+        try {
+          const response = await fetch("http://127.0.0.1:8000/users/account", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(accountData)
+          });
+          if (!response.ok) {
+            throw new Error("계좌 생성에 실패했습니다.");
+          }
+          const newAccount = await response.json();
+          alert("계좌가 성공적으로 생성되었습니다!");
+          // 계좌 생성 후 폼을 숨기고, 목록을 갱신
+          document.getElementById("create-account-form-container").style.display = "none";
+          fetchAccountDetails(jwt_token);
+        } catch (error) {
+          console.error("계좌 생성 에러:", error);
+          alert("계좌 생성 중 에러 발생: " + error);
+        }
+      });
     </script>
   </body>
 </html>
-
