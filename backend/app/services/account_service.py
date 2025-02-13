@@ -1,6 +1,6 @@
 from app.models.models import Account, Transactions
 from app.schemas.account_schemas import Transfer, Account, Transfer_log
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 from fastapi import HTTPException
 
 class AccountService:
