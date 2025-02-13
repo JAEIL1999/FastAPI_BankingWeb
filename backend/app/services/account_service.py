@@ -82,7 +82,7 @@ class AccountService:
         batch_size = 10
 
         while True:
-            logs = db.query(Transactions).filter(Transactions.sender.in_(account_ids)).offset(offset).limit(batch_size).all()
+            logs = db.query(Transactions).filter(Transactions.sender.in_(account_ids)).order_by(Transactions.timestamp.desc()).offset(offset).limit(batch_size).all()
 
             if not logs:
                 break
