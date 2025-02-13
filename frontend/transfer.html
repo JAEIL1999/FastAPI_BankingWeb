@@ -88,7 +88,7 @@
   </head>
   <body>
     <div class="container">
-      <button class="back-btn" onclick="navigateTo('계좌조회')">이전</button>
+      <button class="back-btn" onclick="{navigateTo('계좌조회'); gotToAccount();}">이전</button>
       <h1>계좌이체</h1>
       <h2>어디로 돈을 보낼까요?</h2>
       <button
@@ -122,6 +122,9 @@
 
       function accountTofavorites() {
         window.location.href = `favorites.html?jwt_token=${jwt_token}`;
+      }
+      function gotToAccount() {
+        window.location.href = `account.html?jwt_token=${jwt_token}`;
       }
 
       document.addEventListener("DOMContentLoaded", function () {
@@ -188,9 +191,7 @@
             alert("이체 중 오류가 발생했습니다.");
           });
       }
-      function gotToAccount() {
-        window.location.href = `account.html?jwt_token=${jwt_token}`;
-      }
+
     </script>
   </body>
 </html>
