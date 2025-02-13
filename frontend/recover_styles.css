@@ -57,7 +57,7 @@ input:focus {
 button {
     width: 100%;
     padding: 12px;
-    background-color: #007bff;
+    background-color: #76D4FF;
     border: none;
     border-radius: 5px;
     color: white;
@@ -70,8 +70,22 @@ button:hover {
     background-color: #0056b3;
 }
 
+a {
+    color: blue; /* 기본 링크 색상 */
+    text-decoration: none; /* 밑줄 제거 (선택 사항) */
+}
+
+a:visited {
+    color: blue; /* 방문한 후에도 같은 색 유지 */
+}
+
+a:hover {
+    color: darkblue; /* 마우스를 올렸을 때 색상 변경 */
+}
+
 p {
     text-align: center;
+    font-weight: bold;
     font-size: 20px;
     margin: 10px;
 }

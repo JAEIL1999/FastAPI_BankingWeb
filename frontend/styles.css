@@ -26,8 +26,12 @@ body {
     width: 500px;
 }
 
+a {
+    text-decoration: none; /* 밑줄 제거 (선택 사항) */
+}
 a:visited {
     color: #007bff; /* 방문한 후에도 원래 색 유지 */
+
 }
 
 input {
@@ -42,11 +46,11 @@ input {
 }
 
 button {
-    width: 85%;
+    width: 100%;
     padding: 10px;
     background: #2ECCFA;
     color: white;
-    
+    font-size: large;
     border: none;
     border-radius: 5px;
     cursor: pointer;

@@ -1,3 +1,4 @@
+<!-- --TODO-- LOGOUT 구현 -->
 <!DOCTYPE html>
 <html lang="ko">
   <head>
@@ -16,7 +17,7 @@
       <section id = "calendar">
         <script src="js/calendar.js"></script>
       </section>
-
+      
       <section class="button">
         <p>안녕하세요</p>
         <p id="username">님</p>
@@ -45,10 +46,8 @@
             window.location.href = `account.html?user_id=${userId}`;
           }
         </script>
-        
         <button class="buttons", id="button3" onclick="navigateTo('홈')">로그아웃</button> <!--TODO-->
       </section>
-        
       <section>
         <button class="button", id="button2", onclick="navigateTo('계좌조회'); userTOaccount(userId);">계좌조회</button>
       </section>

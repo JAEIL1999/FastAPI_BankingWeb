@@ -12,10 +12,10 @@
         <h2>비밀번호 찾기</h2>
         <form id="recoverForm">
             <label for="login_id">아이디:</label>
-            <input type="text" id="login_id" name="login_id" required><br>
+            <input type="text" id="login_id" name="login_id" placeholder="아이디" required><br>
 
             <label for="name">이름:</label>
-            <input type="text" id="name" name="name" required><br>
+            <input type="text" id="name" name="name" placeholder="고객 이름" required><br>
             <button type="submit">비밀번호 찾기</button>
             <p><a href="signin.html">로그인 화면으로 이동</a></p>
         </form>
@@ -48,8 +48,8 @@
                     responseMessage.classList.add('error');
                     responseMessage.classList.remove('success');
                 } else if (typeof data === "string") {
-                    // 성공 시 (예: "비밀번호는 ab*** 입니다.")
-                    responseMessage.textContent = data;
+                    // 성공 시 (예: "비밀번호는 abc***** 입니다.")
+                    responseMessage.textContent = `${name} 고객님의 비밀번호는` + "\n" +data;
                     responseMessage.classList.add('success');
                     responseMessage.classList.remove('error');
                 } else {
