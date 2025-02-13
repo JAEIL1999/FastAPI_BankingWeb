@@ -88,7 +88,7 @@
   <body>
     <div class="container">
       <div class="sub_container">
-        <button class="back-btn" onclick="navigateTo('계좌이체')">이전</button>
+        <button class="back-btn" onclick="{navigateTo('계좌이체'); goToTransferPage();}">이전</button>
         <h1>즐겨찾기</h1>
         <button onclick="loadFavorites()">조회</button>
         <button onclick="openPopup()">추가</button>
@@ -123,7 +123,7 @@
           alert("ID를 찾을 수 없습니다.");
           return;
         }
-      
+
         fetch(`http://127.0.0.1:8000/users/favorites?jwt_token=${jwt_token}`)
           .then((response) => {
             if (!response.ok) {
@@ -133,27 +133,27 @@
           })
           .then((data) => {
             console.log("받은 데이터:", data); // 콘솔에서 데이터 확인
-      
+
             if (!Array.isArray(data)) {
               throw new Error("응답이 배열이 아님: " + JSON.stringify(data));
             }
-      
+
             tableBody.innerHTML = ""; // 기존 목록 초기화
             if (data.length === 0) {
               alert("즐겨찾기 목록이 없습니다.");
               return;
             }
-      
+
             data.forEach((fav) => {
               const row = tableBody.insertRow();
               row.insertCell(0).textContent = fav.account_id;
-      
+
               const confirmBtn = document.createElement("button");
               confirmBtn.textContent = "확인";
               confirmBtn.classList.add("confirm-btn");
               confirmBtn.onclick = () => goToTransferPage(fav.account_id);
               row.insertCell(1).appendChild(confirmBtn);
-      
+
               const deleteBtn = document.createElement("button");
               deleteBtn.textContent = "삭제";
               deleteBtn.classList.add("delete-btn");
@@ -166,9 +166,6 @@
             alert("즐겨찾기 로드 실패: " + error.message);
           });
       }
-      
-      
-
 
       function openPopup() {
         document.getElementById("popup").style.display = "block";
@@ -179,41 +176,51 @@
       }
 
       function addFavorite() {
-        const accountId = document.getElementById("popupAccountId").value;
-      
+        const accountId = document
+          .getElementById("popupAccountId")
+          .value.trim();
+
         if (!accountId) {
           alert("Account ID를 입력하세요.");
           return;
         }
-      
+
+        console.log("전송할 account_id:", accountId);
+
         fetch("http://127.0.0.1:8000/users/favorites", {
           method: "POST",
-          body: JSON.stringify({ account_id: Number(accountId) }), // account_id는 숫자로 변환
+          body: JSON.stringify({ account_id: accountId }), 
           headers: {
             "Content-Type": "application/json",
-            "jwt_token": jwt_token,  // 헤더에 JWT 토큰 추가
+            "jwt-token": jwt_token,
           },
         })
           .then((response) => {
             if (!response.ok) {
-              throw new Error("서버 응답 오류");
+              return response.json().then((err) => {
+                throw new Error(JSON.stringify(err));
+              });
             }
             return response.json();
           })
           .then((data) => {
             alert("즐겨찾기 추가 성공");
             closePopup();
-            loadFavorites(); // 추가 후 목록 새로고침
+            loadFavorites();
           })
-          .catch((error) => alert("즐겨찾기 추가 실패: " + error));
+          .catch((error) => {
+            console.error("즐겨찾기 추가 실패:", error);
+            alert("즐겨찾기 추가 실패: " + error);
+          });
       }
-      
-      
 
       function deleteFavorite(accountId) {
-        fetch(`http://127.0.0.1:8000/favorites/${accountId}?jwt_token=${jwt_token}`, {
-          method: "DELETE",
-        })
+        fetch(
+          `http://127.0.0.1:8000/favorites/${accountId}?jwt_token=${jwt_token}`,
+          {
+            method: "DELETE",
+          }
+        )
           .then((response) => response.json())
           .then((data) => {
             alert("즐겨찾기 삭제 성공");
@@ -224,6 +231,9 @@
 
       function goToTransferPage(accountId) {
         window.location.href = `transfer.html?account_id=${accountId}&is_receiver=true&jwt_token=${jwt_token}`;
+      }
+      function goToTransferPage() {
+        window.location.href = `transfer.html?jwt_token=${jwt_token}`;
       }
     </script>
   </body>
