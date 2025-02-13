@@ -96,11 +96,17 @@
       function userTOaccount() {
         window.location.href = `account.html?jwt_token=${jwt_token}`;
       }
+      function accountTOuser(){
+        window.location.href = `user.html?access_token=${jwt_token}`;
+      }
+      function goTOTransfer(){
+        window.location.href = `transfer.html?jwt_token=${jwt_token}`;
+      }
       function navigateTo(page) {
         if (page === '홈') {
-          window.location.href = 'user.html';
+          accountTOuser();
         } else if (page === '계좌이체') {
-          window.location.href = 'transfer.html';
+          goTOTransfer();
         } else if (page === '계좌조회') {
           userTOaccount();
         }
