@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>거래내역 조회</title>
+    <link rel="stylesheet" href="transactions.css" />
+    <style>
+      /* 기본 스타일 */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #d9d9d9;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        margin-top: 50px;
+        background-color: #d9d9d9;
+        color: black;
+        padding: 20px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        padding-bottom: 15px;
+      }
+      header button {
+        margin: 5px 5px;
+        padding: 6px 16px;
+        font-size: 1em;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      h2 {
+        text-align: center;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <!-- 네비게이션 헤더 -->
+    <header>
+      <h1 style="color:#1E1E1E">거래내역</h1>
+      <button onclick="navigateTo('홈')" style="background-color: #fff;">홈</button>
+      <button onclick="navigateTo('계좌이체')" style="background-color: #f9ff82;">계좌이체</button>
+      <button onclick="navigateTo('계좌조회')" style="background-color: #76D4FF;">계좌조회</button>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <div class="container">
+      <div id="transaction-details">
+        <p>거래 내역을 불러오는 중입니다...</p>
+      </div>
+    </div>
+
+
+    <script>
+      // 네비게이션 함수 (필요 시 페이지 경로 수정)
+      function userTOaccount() {
+        window.location.href = `account.html?jwt_token=${jwt_token}`;
+      }
+      function accountTOuser(){
+        window.location.href = `user.html?access_token=${jwt_token}`;
+      }
+      function goTOTransfer(){
+        window.location.href = `transfer.html?jwt_token=${jwt_token}`;
+      }
+      function navigateTo(page) {
+        if (page === '홈') {
+          accountTOuser();
+        } else if (page === '계좌이체') {
+          goTOTransfer();
+        } else if (page === '계좌조회') {
+          userTOaccount();
+        }
+      }
+
+      // URL 쿼리 파라미터에서 jwt_token 추출
+      const params = new URLSearchParams(window.location.search);
+      const jwt_token = params.get("jwt_token");
+      console.log("추출된 JWT 토큰:", jwt_token);
+
+      if (!jwt_token) {
+        document.getElementById("transaction-details").innerText = "JWT 토큰이 제공되지 않았습니다.";
+      } else {
+        fetchTransactionLogs(jwt_token);
+      }
+
+      // 거래 내역을 조회하는 함수
+      async function fetchTransactionLogs(token) {
+        try {
+          // 백엔드 API는 경로 파라미터 방식 사용: /user/{jwt_token}
+          const response = await fetch(`http://127.0.0.1:8000/user/${token}`);
+          if (!response.ok) {
+            throw new Error("거래 내역을 불러올 수 없습니다.");
+          }
+          const data = await response.json();
+          // 백엔드에서 반환한 JSON이 { transfer_list: [...] } 형태라고 가정
+          displayTransactionLogs(data.transfer_list);
+        } catch (error) {
+          console.error("Error:", error);
+          document.getElementById("transaction-details").innerText = "거래 내역을 가져올 수 없습니다.";
+        }
+      }
+
+      // 거래 내역 데이터를 테이블로 렌더링하는 함수
+      function displayTransactionLogs(logs) {
+        const container = document.getElementById("transaction-details");
+        if (!logs || logs.length === 0) {
+          container.innerHTML = "<p>조회된 거래 내역이 없습니다.</p>";
+          return;
+        }
+        let html = "<table>";
+        html += "<tr><th>거래 ID</th><th>보내는 계좌</th><th>받는 계좌</th><th>금액</th><th>거래 시각</th></tr>";
+        logs.forEach(log => {
+          html += `<tr>
+                      <td>${log.id}</td>
+                      <td>${log.sender}</td>
+                      <td>${log.receiver}</td>
+                      <td>${log.amount}</td>
+                      <td>${new Date(log.timestamp).toLocaleString()}</td>
+                   </tr>`;
+        });
+        html += "</table>";
+        container.innerHTML = html;
+      }
+    </script>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 from app.models.models import Account, Transactions
 from app.schemas.account_schemas import Transfer, Account, Transfer_log
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 from fastapi import HTTPException
 
 class AccountService:
@@ -76,13 +76,13 @@ class AccountService:
         return {"status": "Transfer successful"}
     
     # 계좌이체 내역
-    def transfer_logs(self, db: Session, account_id: int) -> Transfer_log:
+    def transfer_logs(self, db: Session, account_ids: list[int]) -> Transfer_log:
         user_logs = Transfer_log(transfer_list=[])
         offset = 0
         batch_size = 10
 
         while True:
-            logs = db.query(Transactions).filter(Transactions.sender == account_id).offset(offset).limit(batch_size).all()
+            logs = db.query(Transactions).filter(or_ (Transactions.sender.in_(account_ids), Transactions.receiver.in_(account_ids))).offset(offset).limit(batch_size).all()
 
             if not logs:
                 break

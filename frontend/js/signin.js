@@ -26,7 +26,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
             message.textContent = "로그인에 성공하였습니다.";
             localStorage.setItem("token", result.access_token); // JWT 토큰 저장
             alert(`${result.name}님, 반갑습니다`);
-            window.location.href = `user.html?login_id=${encodeURIComponent(result.login_id)}`;
+            window.location.href = `user.html?access_token=${result.access_token}`;
         } else {
             message.style.color = "red";
             message.textContent = "로그인 실패: " + result.detail;

@@ -22,10 +22,10 @@
         <p>안녕하세요</p>
         <p id="username">님</p>
         <script>
-          async function fetchUserName(userId) {
+          async function fetchUserName(jwt_token) {
               try {
                   // 백엔드 API 호출
-                  const response = await fetch(`http://127.0.0.1:8000/users/${userId}/home`);
+                  const response = await fetch(`http://127.0.0.1:8000/users/home?jwt_token=${jwt_token}`);
                   if (!response.ok) {
                       throw new Error("사용자 정보를 불러올 수 없습니다.");
                   }
@@ -39,17 +39,17 @@
   
           // 예제 user_id (로그인 후 저장된 ID를 여기에 넣어야 함)
           const params = new URLSearchParams(window.location.search)
-          const userId = params.get("login_id");  // 실제로는 로그인 후 동적으로 할당해야 함
-          fetchUserName(userId);
+          const jwt_token = params.get("access_token");  // 실제로는 로그인 후 동적으로 할당해야 함
+          fetchUserName(jwt_token);
 
-          function userTOaccount(userId) {
-            window.location.href = `account.html?user_id=${userId}`;
+          function userTOaccount() {
+            window.location.href = `account.html?jwt_token=${jwt_token}`;
           }
         </script>
         <button class="buttons", id="button3" onclick="navigateTo('홈')">로그아웃</button> <!--TODO-->
       </section>
       <section>
-        <button class="button", id="button2", onclick="navigateTo('계좌조회'); userTOaccount(userId);">계좌조회</button>
+        <button class="button", id="button2", onclick="navigateTo('계좌조회'); userTOaccount();">계좌조회</button>
       </section>
 
     <script src="js/router.js"></script>
