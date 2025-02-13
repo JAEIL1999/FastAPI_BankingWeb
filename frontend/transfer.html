@@ -120,8 +120,11 @@
       const params = new URLSearchParams(window.location.search);
       const jwt_token = params.get("jwt_token");
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const sender = urlParams.get("sender");
+     
       function accountTofavorites() {
-        window.location.href = `favorites.html?jwt_token=${jwt_token}`;
+        window.location.href = `favorites.html?sender=${sender}&jwt_token=${jwt_token}`;
       }
       function gotToAccount() {
         window.location.href = `account.html?jwt_token=${jwt_token}`;
@@ -130,16 +133,15 @@
       document.addEventListener("DOMContentLoaded", function () {
         // URL에서 쿼리 파라미터 가져오기
         const urlParams = new URLSearchParams(window.location.search);
-        const accountId = urlParams.get("account_id");
-        const isSender = urlParams.get("is_sender");
-        const isReceiver = urlParams.get("is_receiver");
+        const sender = urlParams.get("sender");
+        const receiver = urlParams.get("receiver")
 
-        // 송금자 계좌 입력 필드 채우기 (is_sender가 true일 때 sender로 채우기)
-        if (isSender && accountId) {
+        // 송금자 계좌 입력 필드 채우기
+        if (sender) {
           document.getElementById("sender").value = accountId;
         }
-        // 수신자 계좌 입력 필드 채우기 (is_receiver가 true일 때 receiver로 채우기)
-        else if (isReceiver && accountId) {
+        // 수신자 계좌 입력 필드 채우기
+        else if (receiver) {
           document.getElementById("receiver").value = accountId;
         }
 

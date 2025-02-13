@@ -117,6 +117,15 @@
       const params = new URLSearchParams(window.location.search);
       const jwt_token = params.get("jwt_token"); // transfer에서 보낸 토큰
 
+      const sender = urlParams.get("sender");
+
+      function goToTransferPagewithAccountId(accountId) {
+        window.location.href = `transfer.html?sender=${sender}receiver=${accountId}&jwt_token=${jwt_token}`;
+      }
+      function goToTransferPage() {
+        window.location.href = `transfer.html?jwt_token=${jwt_token}`;
+      }
+
       const tableBody = document.querySelector("#favoritesTable tbody");
       function loadFavorites() {
         if (!jwt_token) {
@@ -151,7 +160,7 @@
               const confirmBtn = document.createElement("button");
               confirmBtn.textContent = "확인";
               confirmBtn.classList.add("confirm-btn");
-              confirmBtn.onclick = () => goToTransferPage(fav.account_id);
+              confirmBtn.onclick = () => goToTransferPagewithAccountId(fav.account_id);
               row.insertCell(1).appendChild(confirmBtn);
 
               const deleteBtn = document.createElement("button");
@@ -227,13 +236,6 @@
             loadFavorites();
           })
           .catch((error) => alert("즐겨찾기 삭제 실패: " + error));
-      }
-
-      function goToTransferPage(accountId) {
-        window.location.href = `transfer.html?account_id=${accountId}&is_receiver=true&jwt_token=${jwt_token}`;
-      }
-      function goToTransferPage() {
-        window.location.href = `transfer.html?jwt_token=${jwt_token}`;
       }
     </script>
   </body>
