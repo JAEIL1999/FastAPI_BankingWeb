@@ -129,27 +129,24 @@
       function gotToAccount() {
         window.location.href = `account.html?jwt_token=${jwt_token}`;
       }
-
+      
       document.addEventListener("DOMContentLoaded", function () {
-        // URL에서 쿼리 파라미터 가져오기
-        const urlParams = new URLSearchParams(window.location.search);
-        const sender = urlParams.get("sender");
-        const receiver = urlParams.get("receiver")
-
-        // 송금자 계좌 입력 필드 채우기
-        if (sender) {
-          document.getElementById("sender").value = accountId;
+        // 송금 계좌 정보가 localStorage에 저장되어 있으면 해당 값을 송금 계좌란에 입력
+        const senderAccount = localStorage.getItem("senderAccount");
+        if (senderAccount) {
+          document.getElementById("sender").value = senderAccount;
         }
-        // 수신자 계좌 입력 필드 채우기
-        else if (receiver) {
-          document.getElementById("receiver").value = accountId;
+      
+        // 다른 URL 파라미터들 처리
+        const receiver = new URLSearchParams(window.location.search).get("receiver");
+        if (receiver) {
+          document.getElementById("receiver").value = receiver;
         }
-
         // '보내기' 버튼 클릭 시 transferFunds() 실행
-        document
-          .querySelector(".send-btn")
-          .addEventListener("click", transferFunds);
+        document.querySelector(".send-btn").addEventListener("click", transferFunds);
       });
+      
+      
 
       function transferFunds() {
         const sender = document.getElementById("sender").value;

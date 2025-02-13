@@ -310,10 +310,14 @@
             alert("계좌 생성 중 에러 발생: " + error);
           }
         });
-      function goToTransferPage(accountId) {
-        //const accountId = "accountId"; // 동적으로 계좌 ID를 가져오는 부분
-        window.location.href = `transfer.html?sender=${accountId}&jwt_token=${jwt_token}`;
-      }
+        function goToTransferPage(accountId) {
+          // 송금 계좌 정보를 localStorage에 저장
+          localStorage.setItem("senderAccount", accountId);
+        
+          // 이체 페이지로 이동
+          window.location.href = `transfer.html?sender=${accountId}&jwt_token=${jwt_token}`;
+        }
+        
       function goToTransactionHistory(accountId) {
         window.location.href = `transaction_logs.html?account_id=${accountId}&jwt_token=${jwt_token}`;
       }
