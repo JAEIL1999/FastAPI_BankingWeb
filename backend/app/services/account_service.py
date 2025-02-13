@@ -1,6 +1,6 @@
 from app.models.models import Account, Transactions
 from app.schemas.account_schemas import Transfer, Account, Transfer_log
-from sqlmodel import Session, select
+from sqlmodel import Session, select, or_
 from fastapi import HTTPException
 
 class AccountService:
@@ -82,7 +82,7 @@ class AccountService:
         batch_size = 10
 
         while True:
-            logs = db.query(Transactions).filter(Transactions.sender.in_(account_ids)).offset(offset).limit(batch_size).all()
+            logs = db.query(Transactions).filter(or_ (Transactions.sender.in_(account_ids), Transactions.receiver.in_(account_ids))).offset(offset).limit(batch_size).all()
 
             if not logs:
                 break
