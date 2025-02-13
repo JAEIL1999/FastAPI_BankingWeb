@@ -163,7 +163,7 @@
         const jwt_token = params.get("jwt_token");
 
         if (page === '홈') {
-          window.location.href = `user.html?jwt_token=${jwt_token}`;
+          window.location.href = `user.html?access_token=${jwt_token}`;
         } else if (page === '계좌이체') {
           window.location.href = `transfer.html?jwt_token=${jwt_token}`;
         } else if (page === '거래내역') {
@@ -202,23 +202,30 @@
       function displayAccounts(accounts) {
         const container = document.getElementById("account-details");
         if (!accounts || accounts.length === 0) {
-          container.innerHTML = "<p>조회된 계좌가 없습니다.</p>";
-          return;
+            container.innerHTML = "<p>조회된 계좌가 없습니다.</p>";
+            return;
         }
+        
         let html = "<table>";
-        html += "<tr><th>계좌 ID</th><th>사용자 ID</th><th>계좌 번호</th><th>잔액</th></tr>";
+        html += "<tr><th>계좌 ID</th><th>사용자 ID</th><th>계좌 번호</th><th>잔액</th><th>관리</th></tr>";
+        
         accounts.forEach(account => {
-          html += `<tr>
-                      <td>${account.id}</td>
-                      <td>${account.user_id}</td>
-                      <td>${account.account_id}</td>
-                      <td>${account.balance}</td>
-                   </tr>`;
+            html += `<tr>
+                        <td>${account.id}</td>
+                        <td>${account.user_id}</td>
+                        <td>${account.account_id}</td>
+                        <td>${account.balance.toLocaleString()}</td>
+                        <td>
+                            <button class="transfer-btn" onclick="goToTransferPage('${account.account_id}')">이체</button>
+                            <button class="history-btn" onclick="goToTransactionHistory('${account.account_id}')">내역</button>
+                            <button class="delete-btn" onclick="deleteAccount('${account.account_id}')">삭제</button>
+                        </td>
+                     </tr>`;
         });
         html += "</table>";
         container.innerHTML = html;
       }
-
+    
       // 계좌 생성 폼 토글 함수
       function toggleCreateAccountForm() {
         const formContainer = document.getElementById("create-account-form-container");
@@ -264,6 +271,31 @@
         //const accountId = "accountId"; // 동적으로 계좌 ID를 가져오는 부분
         window.location.href = `transfer.html?account_id=${accountId}&is_sender=true`;
       }
+      function goToTransferPage(accountId) {
+        window.location.href = `transfer.html?account_id=${accountId}&is_sender=true`;
+      }
+      
+      function goToTransactionHistory(accountId) {
+          window.location.href = `transaction_logs.html?account_id=${accountId}`;
+      }
+      
+      async function deleteAccount(accountId) {
+          if (!confirm("정말로 삭제하시겠습니까?")) return;
+          
+          try {
+              const response = await fetch(`http://127.0.0.1:8000/users/account/${accountId}`, {
+                  method: "DELETE"
+              });
+              if (!response.ok) {
+                  throw new Error("삭제 실패");
+              }
+              alert("계좌가 삭제되었습니다!");
+              fetchAccountDetails(jwt_token);  // 삭제 후 목록 갱신
+          } catch (error) {
+              alert("계좌 삭제 중 오류 발생: " + error.message);
+          }
+      }
+    
     </script>
   </body>
 </html>
