@@ -43,7 +43,6 @@ def delete_account(account_id: int,
     return {}
 
 # 송금 내역
-# 인당 1개의 계좌밖에 내역이 안나옴 -> 문제 해결 필요
 @router.get("/user/{jwt_token}")
 def transfer_log(jwt_token: str,
                  session=Depends(get_db),

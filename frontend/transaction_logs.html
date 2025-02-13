@@ -9,31 +9,28 @@
       /* 기본 스타일 */
       body {
         font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
+        background-color: #d9d9d9;
         margin: 0;
         padding: 0;
       }
       header {
-        background-color: #F9FF82;
-        color: white;
-        padding: 15px;
+        margin-top: 50px;
+        background-color: #d9d9d9;
+        color: black;
+        padding: 20px;
         text-align: center;
       }
       header h1 {
         margin: 0;
-        padding-bottom: 10px;
+        padding-bottom: 15px;
       }
       header button {
-        margin: 0 5px;
-        padding: 8px 16px;
+        margin: 5px 5px;
+        padding: 6px 16px;
         font-size: 1em;
-        background-color: #ffffff;
         border: none;
         border-radius: 4px;
         cursor: pointer;
-      }
-      header button:hover {
-        background-color: #ddd;
       }
       .container {
         max-width: 800px;
@@ -59,48 +56,42 @@
       th {
         background-color: #f2f2f2;
       }
-      footer {
-        text-align: center;
-        padding: 10px;
-        background-color: #fff;
-        position: fixed;
-        width: 100%;
-        bottom: 0;
-      }
+      
     </style>
   </head>
   <body>
     <!-- 네비게이션 헤더 -->
     <header>
-      <h1 style="color:#1E1E1E">Transactions</h1>
-      <button onclick="navigateTo('홈')" style="background-color: #76D4FF;">홈</button>
-      <button onclick="navigateTo('계좌이체')" style="background-color: #76D4FF;">계좌이체</button>
+      <h1 style="color:#1E1E1E">거래내역</h1>
+      <button onclick="navigateTo('홈')" style="background-color: #fff;">홈</button>
+      <button onclick="navigateTo('계좌이체')" style="background-color: #f9ff82;">계좌이체</button>
       <button onclick="navigateTo('계좌조회')" style="background-color: #76D4FF;">계좌조회</button>
     </header>
 
     <!-- 메인 컨텐츠 영역 -->
     <div class="container">
-      <h2>거래내역</h2>
       <div id="transaction-details">
         <p>거래 내역을 불러오는 중입니다...</p>
       </div>
     </div>
 
-    <!-- 하단 푸터 -->
-    <footer>
-      <p>© 2025 PNU mini bootcamp TEAM6</p>
-    </footer>
 
     <script>
       // 네비게이션 함수 (필요 시 페이지 경로 수정)
       function userTOaccount() {
         window.location.href = `account.html?jwt_token=${jwt_token}`;
       }
+      function accountTOuser(){
+        window.location.href = `user.html?access_token=${jwt_token}`;
+      }
+      function goTOTransfer(){
+        window.location.href = `transfer.html?jwt_token=${jwt_token}`;
+      }
       function navigateTo(page) {
         if (page === '홈') {
-          window.location.href = 'user.html';
+          accountTOuser();
         } else if (page === '계좌이체') {
-          window.location.href = 'transfer.html';
+          goTOTransfer();
         } else if (page === '계좌조회') {
           userTOaccount();
         }
